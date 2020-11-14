@@ -23,9 +23,12 @@ RUN apt-get update
 RUN apt-get -qq -y install \
     curl \
     unzip \
-    zip
+    zip \
+    gcc \
+    python-dev \
+    python-setuptools \
+    libffi-dev
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
-RUN apt-get -qq -y install curl
 
 ARG USER_NAME=jovyan
 ENV HOME=/tmp/$USER_NAME
@@ -64,7 +67,7 @@ USER $NB_USER
 RUN source /opt/conda/etc/profile.d/conda.sh && \
     conda create python=$PYTHON_MAJOR -p $HOME/venv/$JUPYTER_KERNEL_NAME -y && \
     conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
-    pip install -U ipykernel pandas pyspark==$SPARK_VERSION && \
+    pip install -U ipykernel pandas pyspark==$SPARK_VERSION gsutil && \
     python -m ipykernel install --user --name $JUPYTER_KERNEL_NAME --display-name $JUPYTER_KERNEL_NAME && \
     conda deactivate
 
