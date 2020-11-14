@@ -1,0 +1,88 @@
+stages:
+  - version
+  - buildPublish
+
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
+  VERSION_FILE: version.sh
+  GIT_DEPTH: 500
+  DOCKER_VERSION: 19.03.12
+  JDK_VERSION: 8.0.275.hs-adpt
+  SBT_VERSION: 1.3.10
+  SCALA_VERSION: 2.12.10
+  BASE_IMAGE: jupyter/minimal-notebook:612aa5710bf9
+  IMAGE_NAME: ds-notebook
+  NAMESPACE_IMAGE_NAME: biodatageeks/${IMAGE_NAME}
+  NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
+  JUPYTER_KERNEL_NAME: datascience
+  PYTHON_MAJOR: "3.7"
+
+.defaultImageVars: &defaultImageVars
+  SPARK_VERSION: "3.0.1"
+
+
+# --------------------------------- STAGE: version ---------------------------------------------------------------------
+version-branch:
+  stage: version
+  image:
+    name: mdomke/git-semver:v4.0.1
+    entrypoint: [""]
+  script:
+    - cd /builds/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME && git-semver --format x.y.z+m | sed 's/+/-/g' | xargs -I {} echo "export VERSION={}" > $VERSION_FILE
+    - cat $VERSION_FILE
+  artifacts:
+    paths:
+      - $VERSION_FILE
+  tags: [ docker ]
+  except: [ master, tags ]
+
+version-tag:
+  stage: version
+  image:
+    name: mdomke/git-semver:v4.0.1
+    entrypoint: [""]
+  script:
+    - cd /builds/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME && git-semver --no-hash --no-pre | xargs -I {} echo "export VERSION={}" > $VERSION_FILE
+    - cat $VERSION_FILE
+  artifacts:
+    paths:
+      - $VERSION_FILE
+  tags: [ docker ]
+  only:
+    - tags
+  except:
+    - branches
+
+
+
+.buildPublish: &buildPublish
+  image:
+    name: docker:$DOCKER_VERSION
+  before_script:
+    - source $VERSION_FILE
+    - docker login -u $DOCKER_USER -p $DOCKER_PASSWD docker.io
+  script:
+    - cd $IMAGE_NAME/
+    - docker build
+      --pull
+      --build-arg BASE_IMAGE=$BASE_IMAGE
+      --build-arg JAVA_VERSION=$JDK_VERSION
+      --build-arg SCALA_VERSION=$SCALA_VERSION
+      --build-arg SBT_VERSION=$SBT_VERSION
+      --build-arg SPARK_VERSION=$SPARK_VERSION
+      --build-arg NOTEBOOKS_REPO=$NOTEBOOKS_REPO
+      --build-arg JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
+      --build-arg PYTHON_MAJOR=$PYTHON_MAJOR
+      -t $NAMESPACE_IMAGE_NAME:$VERSION
+      .
+    - docker push $NAMESPACE_IMAGE_NAME:$VERSION
+  tags: [ docker ]
+
+
+
+buildPublishDefault:
+  stage: buildPublish
+  variables:
+    <<: *defaultImageVars
+  <<: *buildPublish
+  except: [ master ]
