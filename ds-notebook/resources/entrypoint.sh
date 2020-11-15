@@ -28,7 +28,7 @@ fi
 
 
 export PYSPARK_SUBMIT_ARGS="--repositories ${BIODATAGEEKS_REPOS} \
-  --jars /tmp/gcs-connector-hadoop2-latest.jar \
+  --jars /tmp/gcs-connector-hadoop2-latest.jar,/tmp/google-cloud-nio-0.120.0-alpha-shaded.jar \
   --conf spark.hadoop.google.cloud.auth.service.account.enable=true \
   --conf spark.hadoop.google.cloud.auth.service.account.json.keyfile=$GOOGLE_APPLICATION_CREDENTIALS \
   --conf spark.kubernetes.driverEnv.GCS_PROJECT_ID=$PROJECT_ID \
