@@ -16,7 +16,14 @@ export PROJECT_ID=$(cat $GOOGLE_APPLICATION_CREDENTIALS | jq '.project_id' | sed
 
 envsubst < /tmp/.boto_template > $HOME/.boto
 
-export PYSPARK_SUBMIT_ARGS="--repositories ${BIODATAGEEKS_REPOS}  pyspark-shell"
+export PYSPARK_SUBMIT_ARGS="--repositories ${BIODATAGEEKS_REPOS} \
+  --jars /tmp/gcs-connector-hadoop2-latest.jar
+  --conf spark.hadoop.google.cloud.auth.service.account.enable=true \
+  --conf spark.hadoop.google.cloud.auth.service.account.json.keyfile=$GOOGLE_APPLICATION_CREDENTIALS \
+  --conf spark.hadoop.fs.gs.project.id=$PROJECT_ID \
+  --conf spark.hadoop.fs.gs.impl=com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem \
+  --conf spark.hadoop.fs.AbstractFileSystem.gs.impl=com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS
+   pyspark-shell"
 
 #prepare notebooks
 mkdir -p $HOME/work/git

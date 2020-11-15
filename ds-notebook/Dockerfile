@@ -8,12 +8,13 @@ ARG JAVA_VERSION=8.0.265.hs-adpt
 ARG SCALA_VERSION=2.12.10
 ARG SBT_VERSION=1.3.10
 ARG SPARK_VERSION
-ARG HADOOP_VERSION=3.2
+ARG HADOOP_VERSION=2.7
 ARG PY4J_VERSION="0.10.9"
 ARG NOTEBOOKS_REPO
 ARG JUPYTER_KERNEL_NAME
 ARG PYTHON_MAJOR
 ARG SERVICE_ACCOUNT
+
 
 ENV NOTEBOOKS_REPO=$NOTEBOOKS_REPO
 ENV JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
@@ -80,5 +81,6 @@ RUN source /opt/conda/etc/profile.d/conda.sh && \
     pip install -U ipykernel pandas pyspark==$SPARK_VERSION gsutil && \
     python -m ipykernel install --user --name $JUPYTER_KERNEL_NAME --display-name $JUPYTER_KERNEL_NAME && \
     conda deactivate
+RUN cd /tmp && wget https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop2-latest.jar
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
