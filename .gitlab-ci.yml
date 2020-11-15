@@ -25,7 +25,7 @@ variables:
 
 .spark24ImageVars: &spark24ImageVars
   SPARK_VERSION: "2.4.3"
-  SPARK_IMAGE: "biodatageeks/spark-py:v2.4.3"
+  SPARK_IMAGE: "biodatageeks/spark-py:v2.4.3-3.6.9"
   PYTHON_MINOR: "3.6.9"
   SCALA_VERSION: 2.11.12
   JUPYTER_KERNEL_NAME: pysequila
