@@ -9,7 +9,6 @@ variables:
   DOCKER_VERSION: 19.03.12
   JDK_VERSION: 8.0.275.hs-adpt
   SBT_VERSION: 1.3.10
-  SCALA_VERSION: 2.12.10
   BASE_IMAGE: jupyter/minimal-notebook:612aa5710bf9
   IMAGE_NAME: ds-notebook
   NAMESPACE_IMAGE_NAME: biodatageeks/${IMAGE_NAME}
@@ -21,7 +20,12 @@ variables:
 .defaultImageVars: &defaultImageVars
   SPARK_VERSION: "3.0.1"
   SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
+  SCALA_VERSION: 2.12.10
 
+.spark24ImageVars: &spark24ImageVars
+  SPARK_VERSION: "2.4.3"
+  SPARK_IMAGE: "biodatageeks/spark-py:v2.4.3"
+  SCALA_VERSION: 2.11.12
 
 # --------------------------------- STAGE: version ---------------------------------------------------------------------
 version-branch:
@@ -86,5 +90,12 @@ buildPublishDefault:
   stage: buildPublish
   variables:
     <<: *defaultImageVars
+  <<: *buildPublish
+  except: [ master ]
+
+buildPublish24:
+  stage: buildPublish
+  variables:
+    <<: *spark24ImageVars
   <<: *buildPublish
   except: [ master ]
