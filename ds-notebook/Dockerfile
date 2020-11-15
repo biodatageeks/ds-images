@@ -12,7 +12,7 @@ ARG HADOOP_VERSION=2.7
 ARG PY4J_VERSION="0.10.9"
 ARG NOTEBOOKS_REPO
 ARG JUPYTER_KERNEL_NAME
-ARG PYTHON_MAJOR
+ARG PYTHON_MINOR
 ARG SERVICE_ACCOUNT
 
 
@@ -76,7 +76,7 @@ USER $NB_USER
 
 
 RUN source /opt/conda/etc/profile.d/conda.sh && \
-    conda create python=$PYTHON_MAJOR -p $HOME/venv/$JUPYTER_KERNEL_NAME -y && \
+    conda create python=$PYTHON_MINOR -p $HOME/venv/$JUPYTER_KERNEL_NAME -y && \
     conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
     pip install -U ipykernel pandas pyspark==$SPARK_VERSION gsutil && \
     python -m ipykernel install --user --name $JUPYTER_KERNEL_NAME --display-name $JUPYTER_KERNEL_NAME && \

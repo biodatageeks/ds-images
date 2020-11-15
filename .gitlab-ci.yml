@@ -15,7 +15,7 @@ variables:
   NAMESPACE_IMAGE_NAME: biodatageeks/${IMAGE_NAME}
   NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
   JUPYTER_KERNEL_NAME: datascience
-  PYTHON_MAJOR: "3.7"
+  PYTHON_MINOR: "3.8"
   SERVICE_ACCOUNT: "ds-lab-sa"
 
 .defaultImageVars: &defaultImageVars
@@ -73,7 +73,7 @@ version-tag:
       --build-arg SPARK_VERSION=$SPARK_VERSION
       --build-arg NOTEBOOKS_REPO=$NOTEBOOKS_REPO
       --build-arg JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
-      --build-arg PYTHON_MAJOR=$PYTHON_MAJOR
+      --build-arg PYTHON_MINOR=$PYTHON_MINOR
       --build-arg SERVICE_ACCOUNT=$SERVICE_ACCOUNT
       -t $NAMESPACE_IMAGE_NAME:$VERSION
       .
