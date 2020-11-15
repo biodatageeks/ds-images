@@ -13,9 +13,11 @@ ARG PY4J_VERSION="0.10.9"
 ARG NOTEBOOKS_REPO
 ARG JUPYTER_KERNEL_NAME
 ARG PYTHON_MAJOR
+ARG SERVICE_ACCOUNT
 
 ENV NOTEBOOKS_REPO=$NOTEBOOKS_REPO
 ENV JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
+ENV SERVICE_ACCOUNT=$SERVICE_ACCOUNT
 
 ENV SPARK_VERSION=$SPARK_VERSION
 
@@ -27,7 +29,9 @@ RUN apt-get -qq -y install \
     gcc \
     python-dev \
     python-setuptools \
-    libffi-dev
+    libffi-dev \
+    jq \
+    gettext-base
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 ARG USER_NAME=jovyan
@@ -60,6 +64,12 @@ ENV PYTHONPATH="${SPARK_HOME}/python:${SPARK_HOME}/python/lib/py4j-${PY4J_VERSIO
 
 ADD resources/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ADD resources/.boto_template /tmp/.boto_template
+
+RUN pip install \
+    gsutil \
+    kubernetes
 
 USER $NB_USER
 

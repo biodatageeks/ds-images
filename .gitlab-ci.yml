@@ -16,6 +16,7 @@ variables:
   NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
   JUPYTER_KERNEL_NAME: datascience
   PYTHON_MAJOR: "3.7"
+  SERVICE_ACCOUNT: "ds-lab-sa"
 
 .defaultImageVars: &defaultImageVars
   SPARK_VERSION: "3.0.1"
@@ -73,6 +74,7 @@ version-tag:
       --build-arg NOTEBOOKS_REPO=$NOTEBOOKS_REPO
       --build-arg JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
       --build-arg PYTHON_MAJOR=$PYTHON_MAJOR
+      --build-arg SERVICE_ACCOUNT=$SERVICE_ACCOUNT
       -t $NAMESPACE_IMAGE_NAME:$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:$VERSION
