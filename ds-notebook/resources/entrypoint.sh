@@ -17,6 +17,12 @@ export PROJECT_ID=$(cat $GOOGLE_APPLICATION_CREDENTIALS | jq '.project_id' | sed
 
 envsubst < /tmp/.boto_template > $HOME/.boto
 
+###Packages
+if [ $JUPYTER_KERNEL_NAME == "pysequila" ]; then
+  SPARK_PACKAGES="--packages org.biodatageeks:sequila_2.11:${SEQUILA_VERSION}"
+fi
+
+
 export PYSPARK_SUBMIT_ARGS="--repositories ${BIODATAGEEKS_REPOS} \
   --jars /tmp/gcs-connector-hadoop2-latest.jar \
   --conf spark.hadoop.google.cloud.auth.service.account.enable=true \
@@ -39,6 +45,7 @@ export PYSPARK_SUBMIT_ARGS="--repositories ${BIODATAGEEKS_REPOS} \
   --conf spark.kubernetes.namespace=default \
   --conf spark.driver.host=jupyter-service-$JUPYTERHUB_USER \
   --conf spark.driver.bindAddress=$HOSTNAME \
+  $SPARK_PACKAGES \
    pyspark-shell"
 
 export PYSPARK_PYTHON=python3
