@@ -41,6 +41,8 @@ export PYSPARK_SUBMIT_ARGS="--repositories ${BIODATAGEEKS_REPOS} \
   --conf spark.driver.bindAddress=$HOSTNAME \
    pyspark-shell"
 
+export PYSPARK_PYTHON=python3
+
 #prepare notebooks
 mkdir -p $HOME/work/git
 cd $HOME/work/git
