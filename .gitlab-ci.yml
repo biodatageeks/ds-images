@@ -20,7 +20,7 @@ variables:
 
 .defaultImageVars: &defaultImageVars
   SPARK_VERSION: "3.0.1"
-  SPARK_IMAGE: "newfrontdocker/spark-py:v3.0.1-j14"
+  SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
 
 
 # --------------------------------- STAGE: version ---------------------------------------------------------------------
