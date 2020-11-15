@@ -15,11 +15,12 @@ variables:
   NAMESPACE_IMAGE_NAME: biodatageeks/${IMAGE_NAME}
   NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
   JUPYTER_KERNEL_NAME: datascience
-  PYTHON_MINOR: "3.8"
+  PYTHON_MINOR: "3.7"
   SERVICE_ACCOUNT: "ds-lab-sa"
 
 .defaultImageVars: &defaultImageVars
   SPARK_VERSION: "3.0.1"
+  SPARK_IMAGE: "newfrontdocker/spark-py:v3.0.1-j14"
 
 
 # --------------------------------- STAGE: version ---------------------------------------------------------------------
@@ -75,6 +76,7 @@ version-tag:
       --build-arg JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
       --build-arg PYTHON_MINOR=$PYTHON_MINOR
       --build-arg SERVICE_ACCOUNT=$SERVICE_ACCOUNT
+      --build-arg SPARK_IMAGE=$SPARK_IMAGE
       -t $NAMESPACE_IMAGE_NAME:$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:$VERSION
