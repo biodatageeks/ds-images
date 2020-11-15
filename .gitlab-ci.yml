@@ -55,8 +55,6 @@ version-tag:
   except:
     - branches
 
-
-
 .buildPublish: &buildPublish
   image:
     name: docker:$DOCKER_VERSION
@@ -77,9 +75,9 @@ version-tag:
       --build-arg PYTHON_MINOR=$PYTHON_MINOR
       --build-arg SERVICE_ACCOUNT=$SERVICE_ACCOUNT
       --build-arg SPARK_IMAGE=$SPARK_IMAGE
-      -t $NAMESPACE_IMAGE_NAME:$VERSION
+      -t $NAMESPACE_IMAGE_NAME:spark-$SPARK_VERSION-$VERSION
       .
-    - docker push $NAMESPACE_IMAGE_NAME:$VERSION
+    - docker push $NAMESPACE_IMAGE_NAME:spark-$SPARK_VERSION-$VERSION
   tags: [ docker ]
 
 
