@@ -12,22 +12,24 @@ variables:
   BASE_IMAGE: jupyter/minimal-notebook:612aa5710bf9
   IMAGE_NAME: ds-notebook
   NAMESPACE_IMAGE_NAME: biodatageeks/${IMAGE_NAME}
-  NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
-  PYTHON_MINOR: "3.7"
   SERVICE_ACCOUNT: "ds-lab-sa"
 
 .defaultImageVars: &defaultImageVars
   SPARK_VERSION: "3.0.1"
   SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
+  PYTHON_MINOR: "3.7"
   SCALA_VERSION: 2.12.10
   JUPYTER_KERNEL_NAME: datascience
+  NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
 
 
 .spark24ImageVars: &spark24ImageVars
   SPARK_VERSION: "2.4.3"
   SPARK_IMAGE: "biodatageeks/spark-py:v2.4.3"
+  PYTHON_MINOR: "3.6.9"
   SCALA_VERSION: 2.11.12
   JUPYTER_KERNEL_NAME: pysequila
+  NOTEBOOKS_REPO: https://github.com/biodatageeks/notebooks
 
 # --------------------------------- STAGE: version ---------------------------------------------------------------------
 version-branch:

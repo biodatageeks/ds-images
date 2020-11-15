@@ -82,7 +82,6 @@ RUN source /opt/conda/etc/profile.d/conda.sh && \
     conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
     pip install -U ipykernel pandas pyspark==$SPARK_VERSION gsutil && \
     python -m ipykernel install --user --name $JUPYTER_KERNEL_NAME --display-name $JUPYTER_KERNEL_NAME && \
-    if [ $JUPYTER_KERNEL_NAME == "pysequila" ]; then pip install -U pysequila; fi && \
     conda deactivate
 
 RUN cd /tmp && wget https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop2-latest.jar
