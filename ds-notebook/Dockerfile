@@ -72,7 +72,8 @@ ADD resources/.boto_template /tmp/.boto_template
 
 RUN pip install \
     gsutil \
-    kubernetes
+    kubernetes \
+    jupyter-server-proxy
 
 USER $NB_USER
 
