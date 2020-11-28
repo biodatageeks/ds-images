@@ -13,6 +13,8 @@ variables:
   IMAGE_NAME: ds-notebook
   NAMESPACE_IMAGE_NAME: biodatageeks/${IMAGE_NAME}
   SERVICE_ACCOUNT: "ds-lab-sa"
+  HUB_IMAGE_NAME: ds-hub
+  HUB_BASE_IMAGE: jupyterhub/k8s-hub:0.9.1
 
 .defaultImageVars: &defaultImageVars
   SPARK_VERSION: "3.0.1"
@@ -102,4 +104,24 @@ buildPublish24:
   variables:
     <<: *spark24ImageVars
   <<: *buildPublish
+  except: [ master ]
+
+buildPublishHub:
+  stage: buildPublish
+  variables:
+    NAMESPACE_IMAGE_NAME: biodatageeks/${HUB_IMAGE_NAME}
+  image:
+    name: docker:$DOCKER_VERSION
+  before_script:
+    - source $VERSION_FILE
+    - docker login -u $DOCKER_USER -p $DOCKER_PASSWD docker.io
+  script:
+    - cd ds-hub
+    - docker build
+      --pull
+      --build-arg BASE_IMAGE=$HUB_BASE_IMAGE
+      -t $NAMESPACE_IMAGE_NAME:$VERSION
+      .
+    - docker push $NAMESPACE_IMAGE_NAME:$VERSION
+  tags: [ docker ]
   except: [ master ]

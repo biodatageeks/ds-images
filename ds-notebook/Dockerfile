@@ -71,9 +71,9 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 ADD resources/.boto_template /tmp/.boto_template
 
 RUN pip install \
-    gsutil \
-    kubernetes \
-    jupyter-server-proxy
+    gsutil==4.55 \
+    kubernetes==12.0.1 \
+    jupyter-server-proxy==1.5.0
 
 USER $NB_USER
 
