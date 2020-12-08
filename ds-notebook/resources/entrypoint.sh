@@ -44,6 +44,7 @@ export PYSPARK_SUBMIT_ARGS="--repositories ${BIODATAGEEKS_REPOS} \
   --conf spark.kubernetes.container.image=$SPARK_IMAGE \
   --conf spark.kubernetes.authenticate.driver.serviceAccountName=$SERVICE_ACCOUNT \
   --conf spark.kubernetes.authenticate.serviceAccountName=$SERVICE_ACCOUNT \
+  --conf spark.kubernetes.executor.podNamePrefix=pyspark-exec-$JUPYTERHUB_USER \
   --conf spark.driver.port=29010 \
   --conf spark.blockManager.port=29011 \
   --conf spark.kubernetes.namespace=default \
