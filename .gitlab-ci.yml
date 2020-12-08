@@ -97,14 +97,12 @@ buildPublishDefault:
   variables:
     <<: *defaultImageVars
   <<: *buildPublish
-  except: [ main ]
 
 buildPublish24:
   stage: buildPublish
   variables:
     <<: *spark24ImageVars
   <<: *buildPublish
-  except: [ main ]
 
 buildPublishHub:
   stage: buildPublish
@@ -124,4 +122,3 @@ buildPublishHub:
       .
     - docker push $NAMESPACE_IMAGE_NAME:$VERSION
   tags: [ docker ]
-  except: [ main ]
