@@ -33,6 +33,15 @@ variables:
   JUPYTER_KERNEL_NAME: pysequila
   NOTEBOOKS_REPO: https://github.com/biodatageeks/notebooks
 
+
+.edugenImageVars: &edugenImageVars
+  SPARK_VERSION: "3.0.1"
+  SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
+  PYTHON_MINOR: "3.7"
+  SCALA_VERSION: 2.12.10
+  JUPYTER_KERNEL_NAME: edugen
+  NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
+
 # --------------------------------- STAGE: version ---------------------------------------------------------------------
 version-branch:
   stage: version
@@ -103,6 +112,13 @@ buildPublish24:
   stage: buildPublish
   variables:
     <<: *spark24ImageVars
+  <<: *buildPublish
+  except: [ main ]
+
+buildPublishEdugen:
+  stage: buildPublish
+  variables:
+    <<: *edugenImageVars
   <<: *buildPublish
   except: [ main ]
 
