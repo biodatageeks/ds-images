@@ -15,6 +15,8 @@ ARG JUPYTER_KERNEL_NAME
 ARG PYTHON_MINOR
 ARG SERVICE_ACCOUNT
 ARG SPARK_IMAGE
+ARG GSUTIL_VERSION
+ARG IGV_JUPYTER_VERSION=0.9.8
 
 
 ENV NOTEBOOKS_REPO=$NOTEBOOKS_REPO
@@ -71,9 +73,17 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 ADD resources/.boto_template /tmp/.boto_template
 
 RUN pip install \
-    gsutil==4.55 \
+    gsutil==$GSUTIL_VERSION \
     kubernetes==12.0.1 \
     jupyter-server-proxy==1.5.0
+
+
+RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
+        pip install -U igv-jupyter==$IGV_JUPYTER_VERSION; \
+        jupyter serverextension enable --py igv --sys-prefix \
+        jupyter nbextension install --py igv --sys-prefix \
+        jupyter nbextension enable --py igv --sys-prefix \
+    fi
 
 USER $NB_USER
 
@@ -88,9 +98,16 @@ RUN source /opt/conda/etc/profile.d/conda.sh && \
                     matplotlib==3.3.3 \
                     pandas==1.1.4 \
                     seaborn==0.11.0 \
-                    gsutil==4.55 \
+                    gsutil==$GSUTIL_VERSION \
                     google-cloud-storage==1.33.0 && \
     python -m ipykernel install --user --name $JUPYTER_KERNEL_NAME --display-name $JUPYTER_KERNEL_NAME && \
+    if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
+        pip install -U pysam \
+                       multiqc \
+                       biothings_client \
+                       igv-jupyter==$IGV_JUPYTER_VERSION \
+
+    fi
     conda deactivate
 
 RUN cd /tmp && wget https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop2-latest.jar && \

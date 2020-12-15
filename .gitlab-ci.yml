@@ -15,6 +15,7 @@ variables:
   SERVICE_ACCOUNT: "ds-lab-sa"
   HUB_IMAGE_NAME: ds-hub
   HUB_BASE_IMAGE: jupyterhub/k8s-hub:0.9.1
+  GSUTIL_VERSION: "4.55"
 
 .defaultImageVars: &defaultImageVars
   SPARK_VERSION: "3.0.1"
@@ -94,6 +95,7 @@ version-tag:
       --build-arg PYTHON_MINOR=$PYTHON_MINOR
       --build-arg SERVICE_ACCOUNT=$SERVICE_ACCOUNT
       --build-arg SPARK_IMAGE=$SPARK_IMAGE
+      --build-arg GSUTIL_VERSION=$GSUTIL_VERSION
       -t $NAMESPACE_IMAGE_NAME:spark-$SPARK_VERSION-$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:spark-$SPARK_VERSION-$VERSION
