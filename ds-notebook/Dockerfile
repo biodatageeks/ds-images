@@ -16,7 +16,7 @@ ARG PYTHON_MINOR
 ARG SERVICE_ACCOUNT
 ARG SPARK_IMAGE
 ARG GSUTIL_VERSION
-ARG IGV_JUPYTER_VERSION=0.9.8
+ARG IGV_JUPYTER_VERSION=2.0.4
 
 
 ENV NOTEBOOKS_REPO=$NOTEBOOKS_REPO
@@ -78,10 +78,8 @@ RUN pip install \
 
 
 RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
-        pip install -U igv-jupyter==$IGV_JUPYTER_VERSION && \
-        jupyter serverextension enable --py igv --sys-prefix && \
-        jupyter nbextension install --py igv --sys-prefix && \
-        jupyter nbextension enable --py igv --sys-prefix && \
+        pip install -U igv-jupyterlab==$IGV_JUPYTER_VERSION && \
+        jupyter labextension install @jupyter-widgets/jupyterlab-manager @epi2melabs/igv-jupyterlab && \
         apt-get update && \
         apt-get -qq -y install samtools bedtools libhts-dev fastqc bwa; \
     fi
@@ -108,7 +106,7 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && if [ $JUPYTER_KERNEL_NAME == "e
         pip install -U pysam \
                        multiqc \
                        biothings_client \
-                       igv-jupyter==$IGV_JUPYTER_VERSION; \
+                       igv-jupyterlab==$IGV_JUPYTER_VERSION; \
     fi && \
     conda deactivate
 
