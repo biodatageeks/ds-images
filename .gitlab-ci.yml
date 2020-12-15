@@ -36,6 +36,7 @@ variables:
 
 
 .edugenImageVars: &edugenImageVars
+  JDK_VERSION: 11.0.9.hs-adpt
   SPARK_VERSION: "3.0.1"
   SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
   PYTHON_MINOR: "3.7"
