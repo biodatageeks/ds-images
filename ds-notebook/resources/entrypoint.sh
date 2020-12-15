@@ -61,7 +61,7 @@ export PYSPARK_PYTHON=python3
 mkdir -p $HOME/work/git
 cd $HOME/work/git
 git clone $NOTEBOOKS_REPO
-for dir in $( ls -1 ) do:
+for dir in $( ls -1 ); do
   cd $dir && git pull --rebase
   cd ..
 done

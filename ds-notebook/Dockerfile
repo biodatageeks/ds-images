@@ -81,7 +81,9 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
         pip install -U igv-jupyter==$IGV_JUPYTER_VERSION && \
         jupyter serverextension enable --py igv --sys-prefix && \
         jupyter nbextension install --py igv --sys-prefix && \
-        jupyter nbextension enable --py igv --sys-prefix; \
+        jupyter nbextension enable --py igv --sys-prefix && \
+        apt-get update && \
+        apt-get -qq -y install samtools bedtools libhts-dev fastqc bwa; \
     fi
 
 USER $NB_USER
