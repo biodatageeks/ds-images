@@ -110,7 +110,9 @@ RUN source /opt/conda/etc/profile.d/conda.sh && \
     python -m ipykernel install --user --name $JUPYTER_KERNEL_NAME --display-name $JUPYTER_KERNEL_NAME && \
     conda deactivate
 
-RUN  source /opt/conda/etc/profile.d/conda.sh && if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
+RUN  source /opt/conda/etc/profile.d/conda.sh && \
+     conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
+     if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
         pip install -U pysam \
                        multiqc \
                        biothings_client \
