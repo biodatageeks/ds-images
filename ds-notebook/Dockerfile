@@ -17,6 +17,7 @@ ARG SERVICE_ACCOUNT
 ARG SPARK_IMAGE
 ARG GSUTIL_VERSION
 ARG IGV_JUPYTER_VERSION=2.0.4
+ARG GATK_VERSION=4.1.9.0
 
 
 ENV NOTEBOOKS_REPO=$NOTEBOOKS_REPO
@@ -83,6 +84,13 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
         apt-get update && \
         apt-get -qq -y install samtools bedtools libhts-dev fastqc bwa; \
     fi
+
+RUN cd /opt && \
+    wget https://github.com/broadinstitute/gatk/releases/download/$GATK_VERSION/gatk-$GATK_VERSION.zip && \
+    unzip gatk-$GATK_VERSION.zip && \
+    rm -rf gatk-$GATK_VERSION.zip
+
+ENV PATH=$PATH:/opt/gatk-$GATK_VERSION
 
 USER $NB_USER
 
