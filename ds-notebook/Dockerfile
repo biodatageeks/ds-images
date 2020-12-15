@@ -26,8 +26,7 @@ ENV SERVICE_ACCOUNT=$SERVICE_ACCOUNT
 ENV SPARK_VERSION=$SPARK_VERSION
 ENV SPARK_IMAGE=$SPARK_IMAGE
 
-RUN apt-get update
-RUN apt-get -qq -y install \
+RUN apt-get update && apt-get -qq -y install \
     curl \
     unzip \
     zip \
@@ -79,10 +78,10 @@ RUN pip install \
 
 
 RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
-        pip install -U igv-jupyter==$IGV_JUPYTER_VERSION; \
-        jupyter serverextension enable --py igv --sys-prefix \
-        jupyter nbextension install --py igv --sys-prefix \
-        jupyter nbextension enable --py igv --sys-prefix \
+        pip install -U igv-jupyter==$IGV_JUPYTER_VERSION && \
+        jupyter serverextension enable --py igv --sys-prefix && \
+        jupyter nbextension install --py igv --sys-prefix && \
+        jupyter nbextension enable --py igv --sys-prefix; \
     fi
 
 USER $NB_USER
@@ -101,14 +100,16 @@ RUN source /opt/conda/etc/profile.d/conda.sh && \
                     gsutil==$GSUTIL_VERSION \
                     google-cloud-storage==1.33.0 && \
     python -m ipykernel install --user --name $JUPYTER_KERNEL_NAME --display-name $JUPYTER_KERNEL_NAME && \
-    if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
+    conda deactivate
+
+RUN  source /opt/conda/etc/profile.d/conda.sh && if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
         pip install -U pysam \
                        multiqc \
                        biothings_client \
-                       igv-jupyter==$IGV_JUPYTER_VERSION \
-
-    fi
+                       igv-jupyter==$IGV_JUPYTER_VERSION; \
+    fi && \
     conda deactivate
+
 
 RUN cd /tmp && wget https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop2-latest.jar && \
     wget https://repo1.maven.org/maven2/com/google/cloud/google-cloud-nio/0.120.0-alpha/google-cloud-nio-0.120.0-alpha-shaded.jar

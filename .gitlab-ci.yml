@@ -41,7 +41,7 @@ variables:
   PYTHON_MINOR: "3.7"
   SCALA_VERSION: 2.12.10
   JUPYTER_KERNEL_NAME: edugen
-  NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
+  NOTEBOOKS_REPO: https://github.com/IMID/edugen_pub
 
 # --------------------------------- STAGE: version ---------------------------------------------------------------------
 version-branch:
