@@ -81,7 +81,15 @@ USER $NB_USER
 RUN source /opt/conda/etc/profile.d/conda.sh && \
     conda create python=$PYTHON_MINOR -p $HOME/venv/$JUPYTER_KERNEL_NAME -y && \
     conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
-    pip install -U ipykernel pandas pyspark==$SPARK_VERSION gsutil && \
+    pip install -U ipykernel==5.3.4 \
+                    pandas==1.1.4 \
+                    pyspark==$SPARK_VERSION \
+                    googledrivedownloader==0.4 \
+                    matplotlib==3.3.3 \
+                    pandas==1.1.4 \
+                    seaborn==0.11.0 \
+                    gsutil==4.55 \
+                    google-cloud-storage==1.33.0 && \
     python -m ipykernel install --user --name $JUPYTER_KERNEL_NAME --display-name $JUPYTER_KERNEL_NAME && \
     conda deactivate
 
