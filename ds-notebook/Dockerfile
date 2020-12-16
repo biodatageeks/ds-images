@@ -82,13 +82,14 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
         pip install -U igv-jupyterlab==$IGV_JUPYTER_VERSION && \
         jupyter labextension install @jupyter-widgets/jupyterlab-manager @epi2melabs/igv-jupyterlab && \
         apt-get update && \
-        apt-get -qq -y install samtools bedtools libhts-dev fastqc bwa; \
+        apt-get -qq -y install samtools bedtools libhts-dev fastqc bwa && \
+        cd /opt && \
+            wget https://github.com/broadinstitute/gatk/releases/download/$GATK_VERSION/gatk-$GATK_VERSION.zip && \
+            unzip gatk-$GATK_VERSION.zip && \
+            rm -rf gatk-$GATK_VERSION.zip ; \
     fi
 
-RUN cd /opt && \
-    wget https://github.com/broadinstitute/gatk/releases/download/$GATK_VERSION/gatk-$GATK_VERSION.zip && \
-    unzip gatk-$GATK_VERSION.zip && \
-    rm -rf gatk-$GATK_VERSION.zip
+
 
 ENV PATH=$PATH:/opt/gatk-$GATK_VERSION
 
