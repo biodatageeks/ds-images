@@ -36,7 +36,8 @@ RUN apt-get update && apt-get -qq -y install \
     python-setuptools \
     libffi-dev \
     jq \
-    gettext-base
+    gettext-base \
+    build-essential
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 ARG USER_NAME=jovyan
@@ -86,7 +87,9 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
         cd /opt && \
             wget https://github.com/broadinstitute/gatk/releases/download/$GATK_VERSION/gatk-$GATK_VERSION.zip && \
             unzip gatk-$GATK_VERSION.zip && \
-            rm -rf gatk-$GATK_VERSION.zip ; \
+            rm -rf gatk-$GATK_VERSION.zip && \
+            cd /opt && git clone https://github.com/atks/vt.git && \
+            cd vt && make; \
     fi
 
 
