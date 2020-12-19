@@ -37,7 +37,14 @@ RUN apt-get update && apt-get -qq -y install \
     libffi-dev \
     jq \
     gettext-base \
-    build-essential
+    build-essential \
+    libz-dev \
+    libbz2-dev \
+    liblzma-dev \
+    libcurl4-gnutls-dev \
+    libssl-dev \
+    g++ \
+    vcftools
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 ARG USER_NAME=jovyan
@@ -85,16 +92,16 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
         apt-get update && \
         apt-get -qq -y install samtools bedtools libhts-dev fastqc bwa tabix bcftools && \
         cd /opt && \
-            wget https://github.com/broadinstitute/gatk/releases/download/$GATK_VERSION/gatk-$GATK_VERSION.zip && \
-            unzip gatk-$GATK_VERSION.zip && \
-            rm -rf gatk-$GATK_VERSION.zip && \
-            cd /opt && git clone https://github.com/atks/vt.git && \
-            cd vt && make; \
+        wget https://github.com/broadinstitute/gatk/releases/download/$GATK_VERSION/gatk-$GATK_VERSION.zip && \
+        unzip gatk-$GATK_VERSION.zip && \
+        rm -rf gatk-$GATK_VERSION.zip && \
+        cd /opt && git clone https://github.com/atks/vt.git  && \
+        cd vt && git checkout 0.57721 && make ;\
     fi
 
 
 
-ENV PATH=$PATH:/opt/gatk-$GATK_VERSION
+ENV PATH=$PATH:/opt/gatk-$GATK_VERSION:/opt/vt
 
 USER $NB_USER
 
