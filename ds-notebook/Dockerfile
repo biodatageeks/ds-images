@@ -15,6 +15,9 @@ ARG JUPYTER_KERNEL_NAME
 ARG PYTHON_MINOR
 ARG SERVICE_ACCOUNT
 ARG SPARK_IMAGE
+ARG GSUTIL_VERSION
+ARG IGV_JUPYTER_VERSION=2.0.4
+ARG GATK_VERSION=4.1.9.0
 
 
 ENV NOTEBOOKS_REPO=$NOTEBOOKS_REPO
@@ -24,8 +27,7 @@ ENV SERVICE_ACCOUNT=$SERVICE_ACCOUNT
 ENV SPARK_VERSION=$SPARK_VERSION
 ENV SPARK_IMAGE=$SPARK_IMAGE
 
-RUN apt-get update
-RUN apt-get -qq -y install \
+RUN apt-get update && apt-get -qq -y install \
     curl \
     unzip \
     zip \
@@ -34,7 +36,15 @@ RUN apt-get -qq -y install \
     python-setuptools \
     libffi-dev \
     jq \
-    gettext-base
+    gettext-base \
+    build-essential \
+    libz-dev \
+    libbz2-dev \
+    liblzma-dev \
+    libcurl4-gnutls-dev \
+    libssl-dev \
+    g++ \
+    vcftools
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 ARG USER_NAME=jovyan
@@ -71,9 +81,27 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 ADD resources/.boto_template /tmp/.boto_template
 
 RUN pip install \
-    gsutil==4.55 \
+    gsutil==$GSUTIL_VERSION \
     kubernetes==12.0.1 \
     jupyter-server-proxy==1.5.0
+
+
+RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
+        pip install -U igv-jupyterlab==$IGV_JUPYTER_VERSION && \
+        jupyter labextension install @jupyter-widgets/jupyterlab-manager @epi2melabs/igv-jupyterlab && \
+        apt-get update && \
+        apt-get -qq -y install samtools bedtools libhts-dev fastqc bwa tabix bcftools && \
+        cd /opt && \
+        wget https://github.com/broadinstitute/gatk/releases/download/$GATK_VERSION/gatk-$GATK_VERSION.zip && \
+        unzip gatk-$GATK_VERSION.zip && \
+        rm -rf gatk-$GATK_VERSION.zip && \
+        cd /opt && git clone https://github.com/atks/vt.git  && \
+        cd vt && git checkout 0.57721 && make ;\
+    fi
+
+
+
+ENV PATH=$PATH:/opt/gatk-$GATK_VERSION:/opt/vt
 
 USER $NB_USER
 
@@ -88,10 +116,21 @@ RUN source /opt/conda/etc/profile.d/conda.sh && \
                     matplotlib==3.3.3 \
                     pandas==1.1.4 \
                     seaborn==0.11.0 \
-                    gsutil==4.55 \
+                    gsutil==$GSUTIL_VERSION \
                     google-cloud-storage==1.33.0 && \
     python -m ipykernel install --user --name $JUPYTER_KERNEL_NAME --display-name $JUPYTER_KERNEL_NAME && \
     conda deactivate
+
+RUN  source /opt/conda/etc/profile.d/conda.sh && \
+     conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
+     if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
+        pip install -U pysam \
+                       multiqc \
+                       biothings_client \
+                       igv-jupyterlab==$IGV_JUPYTER_VERSION; \
+    fi && \
+    conda deactivate
+
 
 RUN cd /tmp && wget https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop2-latest.jar && \
     wget https://repo1.maven.org/maven2/com/google/cloud/google-cloud-nio/0.120.0-alpha/google-cloud-nio-0.120.0-alpha-shaded.jar

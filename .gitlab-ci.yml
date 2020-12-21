@@ -15,6 +15,7 @@ variables:
   SERVICE_ACCOUNT: "ds-lab-sa"
   HUB_IMAGE_NAME: ds-hub
   HUB_BASE_IMAGE: jupyterhub/k8s-hub:0.9.1
+  GSUTIL_VERSION: "4.55"
 
 .defaultImageVars: &defaultImageVars
   SPARK_VERSION: "3.0.1"
@@ -32,6 +33,16 @@ variables:
   SCALA_VERSION: 2.11.12
   JUPYTER_KERNEL_NAME: pysequila
   NOTEBOOKS_REPO: https://github.com/biodatageeks/notebooks
+
+
+.edugenImageVars: &edugenImageVars
+  JDK_VERSION: 11.0.9.hs-adpt
+  SPARK_VERSION: "3.0.1"
+  SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
+  PYTHON_MINOR: "3.7"
+  SCALA_VERSION: 2.12.10
+  JUPYTER_KERNEL_NAME: edugen
+  NOTEBOOKS_REPO: https://github.com/IMID/edugen_pub
 
 # --------------------------------- STAGE: version ---------------------------------------------------------------------
 version-branch:
@@ -85,9 +96,10 @@ version-tag:
       --build-arg PYTHON_MINOR=$PYTHON_MINOR
       --build-arg SERVICE_ACCOUNT=$SERVICE_ACCOUNT
       --build-arg SPARK_IMAGE=$SPARK_IMAGE
-      -t $NAMESPACE_IMAGE_NAME:spark-$SPARK_VERSION-$VERSION
+      --build-arg GSUTIL_VERSION=$GSUTIL_VERSION
+      -t $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
       .
-    - docker push $NAMESPACE_IMAGE_NAME:spark-$SPARK_VERSION-$VERSION
+    - docker push $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
   tags: [ docker ]
 
 
@@ -103,6 +115,13 @@ buildPublish24:
   stage: buildPublish
   variables:
     <<: *spark24ImageVars
+  <<: *buildPublish
+  except: [ main ]
+
+buildPublishEdugen:
+  stage: buildPublish
+  variables:
+    <<: *edugenImageVars
   <<: *buildPublish
   except: [ main ]
 
