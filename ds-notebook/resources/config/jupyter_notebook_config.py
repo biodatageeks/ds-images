@@ -15,18 +15,19 @@ c.NotebookApp.open_browser = False
 # https://github.com/jupyter/notebook/issues/3130
 c.FileContentsManager.delete_to_trash = False
 
-c.ServerProxy.servers = {
-    'mlflow': {
-        'command': ['/bin/bash', '-c', '/opt/tools/bin/start-mlflow.sh {port}'],
-        'port': 5000,
-        'absolute_url': False,
-        'timeout': 30,
-        'launcher_entry': {
-            'title': "MLflow",
-            'icon_path': '/opt/tools/logos/mlflow.svg',
-        },
+c.ServerProxy.servers = {}
+if os.getenv('MLFLOW_ENABLED', 'false') == 'true':
+    c.ServerProxy.servers['mlflow'] = {
+            'command': ['/bin/bash', '-c', '/opt/tools/bin/start-mlflow.sh {port}'],
+            'port': 5000,
+            'absolute_url': False,
+            'timeout': 30,
+            'launcher_entry': {
+                'title': "MLflow",
+                'icon_path': '/opt/tools/logos/mlflow.svg',
+        }
     }
-}
+
 
 # Generate a self-signed certificate
 if 'GEN_CERT' in os.environ:

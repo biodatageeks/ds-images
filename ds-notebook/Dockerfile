@@ -19,8 +19,9 @@ ARG GSUTIL_VERSION
 ARG IGV_JUPYTER_VERSION=2.0.4
 ARG GATK_VERSION=4.1.9.0
 ARG MLFLOW_VERSION
+ARG MLFLOW_ENABLED
 
-
+ENV MLFLOW_ENABLED=$MLFLOW_ENABLED
 ENV NOTEBOOKS_REPO=$NOTEBOOKS_REPO
 ENV JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
 ENV SERVICE_ACCOUNT=$SERVICE_ACCOUNT
@@ -137,7 +138,7 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
                        biothings_client \
                        igv-jupyterlab==$IGV_JUPYTER_VERSION; \
     fi && \
-    if [ $JUPYTER_KERNEL_NAME == "datascience" ]; then \
+    if [ $MLFLOW_ENABLED == "true" ]; then \
         pip install -U mlflow==$MLFLOW_VERSION; \
     fi && \
     conda deactivate
