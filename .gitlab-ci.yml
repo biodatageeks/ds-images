@@ -18,6 +18,7 @@ variables:
   GSUTIL_VERSION: "4.55"
   MLFLOW_VERSION: 1.12.1
   MLFLOW_ENABLED: "false"
+  AUTO_BUCKET_ENABLED: "false"
 
 .defaultImageVars: &defaultImageVars
   SPARK_VERSION: "3.0.1"
@@ -26,6 +27,7 @@ variables:
   SCALA_VERSION: 2.12.10
   JUPYTER_KERNEL_NAME: datascience
   MLFLOW_ENABLED: "true"
+  AUTO_BUCKET_ENABLED: "true"
   NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
 
 
@@ -36,6 +38,7 @@ variables:
   SCALA_VERSION: 2.11.12
   JUPYTER_KERNEL_NAME: pysequila
   MLFLOW_ENABLED: "true"
+  AUTO_BUCKET_ENABLED: "true"
   NOTEBOOKS_REPO: https://github.com/biodatageeks/notebooks
 
 
@@ -47,6 +50,7 @@ variables:
   SCALA_VERSION: 2.12.10
   JUPYTER_KERNEL_NAME: edugen
   MLFLOW_ENABLED: "false"
+  AUTO_BUCKET_ENABLED: "false"
   NOTEBOOKS_REPO: https://github.com/IMID/edugen_pub
 
 # --------------------------------- STAGE: version ---------------------------------------------------------------------
@@ -104,6 +108,7 @@ version-tag:
       --build-arg GSUTIL_VERSION=$GSUTIL_VERSION
       --build-arg MLFLOW_VERSION=$MLFLOW_VERSION
       --build-arg MLFLOW_ENABLED=$MLFLOW_ENABLED
+      --build-arg AUTO_BUCKET_ENABLED=$AUTO_BUCKET_ENABLED
       -t $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION

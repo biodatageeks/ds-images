@@ -67,7 +67,12 @@ for dir in $( ls -1 ); do
 done
 cd $HOME
 
-
+if [ $AUTO_BUCKET_ENABLED == "true" ]; then
+  if [ $(gsutil ls | grep -e gs://bdg-lab-$USER/$ | wc -l) -eq 0 ]; then
+    echo "Creating bucket: gs://bdg-lab-$USER"
+    gsutil mb gs://bdg-lab-$USER
+  fi
+fi
 
 tini -g -- "$@"
 
