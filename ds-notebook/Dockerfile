@@ -18,6 +18,7 @@ ARG SPARK_IMAGE
 ARG GSUTIL_VERSION
 ARG IGV_JUPYTER_VERSION=2.0.4
 ARG GATK_VERSION=4.1.9.0
+ARG MLFLOW_VERSION
 
 
 ENV NOTEBOOKS_REPO=$NOTEBOOKS_REPO
@@ -83,7 +84,8 @@ ADD resources/.boto_template /tmp/.boto_template
 RUN pip install \
     gsutil==$GSUTIL_VERSION \
     kubernetes==12.0.1 \
-    jupyter-server-proxy==1.5.0
+    jupyter-server-proxy==1.5.0 && \
+    jupyter labextension install @jupyterlab/server-proxy
 
 
 RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
@@ -102,6 +104,12 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
 
 
 ENV PATH=$PATH:/opt/gatk-$GATK_VERSION:/opt/vt
+
+RUN mkdir -p /opt/tools/{bin,logos} && chmod -R 755 /opt/tools/
+ADD resources/bin/*.sh /opt/tools/bin/
+ADD resources/logos/* /opt/tools/logos/
+
+ADD resources/config/jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
 
 USER $NB_USER
 
@@ -128,6 +136,9 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
                        multiqc \
                        biothings_client \
                        igv-jupyterlab==$IGV_JUPYTER_VERSION; \
+    fi && \
+    if [ $JUPYTER_KERNEL_NAME == "datascience" ]; then \
+        pip install -U mlflow==$MLFLOW_VERSION; \
     fi && \
     conda deactivate
 
