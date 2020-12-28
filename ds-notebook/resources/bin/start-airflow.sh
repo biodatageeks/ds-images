@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-
-AIRFLOW_PORT=${1}
+JUPYTERLAB_BASE_URL=${1}
+AIRFLOW_PORT=${2}
 
 set -x
 
@@ -9,19 +9,26 @@ conda activate $HOME/venv/$JUPYTER_KERNEL_NAME
 
 if [ ! -d ${AIRFLOW_HOME} ]; then
 	echo "Initializing Airflow DB"
-	airflow initdb
+	airflow db init
 	airflow users create \
     --username admin \
     --firstname Biodatageek \
     --lastname Biodatageek \
     --role Admin \
-    --email team@biodatageeks.org
+    --email team@biodatageeks.org \
+    --password test1234
 	mkdir -p ${AIRFLOW_HOME}/dags
 fi
 
 
+# set the base url for airflow webserver
+export AIRFLOW__WEBSERVER__BASE_URL="https://${LAB_DOMAIN}/user/${USER}/airflow"
+#load examples
+export AIRFLOW__CORE__LOAD_EXAMPLES="True"
 
-airflow webserver --port ${AIRFLOW_PORT} &
-airflow scheduler -D
+airflow webserver --port 6000 &
+airflow scheduler &
+
+wait
 
 conda deactivate

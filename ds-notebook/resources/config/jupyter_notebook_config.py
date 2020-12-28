@@ -30,9 +30,9 @@ if os.getenv('MLFLOW_ENABLED', 'false') == 'true':
 
 if os.getenv('AIRFLOW_ENABLED', 'false') == 'true':
     c.ServerProxy.servers['airflow'] = {
-        'command': ['/bin/bash', '-c', '/opt/tools/bin/start-airflow.sh', '{port}'],
+        'command': ['/bin/bash', '-c', '/opt/tools/bin/start-airflow.sh', '{base_url}', '{port}'],
         'port': 6000,
-        'absolute_url': False,
+        'absolute_url': True,
         'timeout': 600,
         'launcher_entry': {
             'title': "Airflow",

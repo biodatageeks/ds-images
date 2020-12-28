@@ -26,6 +26,7 @@ variables:
   GLOW_PY_VERSION: 0.6.0
   SEQUILA_VERSION: "org.biodatageeks:sequila_2.11:0.5.17"
   PYSEQUILA_VERSION: 0.1.8
+  LAB_DOMAIN: lab.biodatageeks.org
 
 
 .defaultImageVars: &defaultImageVars
@@ -39,6 +40,7 @@ variables:
   AIRFLOW_ENABLED: "false"
   BIG_DATA_GENOMICS_ENABLED: "false"
   NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
+
 
 
 .spark24ImageVars: &spark24ImageVars
@@ -143,6 +145,7 @@ version-tag:
       --build-arg GLOW_VERSION=$GLOW_VERSION
       --build-arg SEQUILA_VERSION=$SEQUILA_VERSION
       --build-arg PYSEQUILA_VERSION=$PYSEQUILA_VERSION
+      --build-arg LAB_DOMAIN=$LAB_DOMAIN
       -t $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
