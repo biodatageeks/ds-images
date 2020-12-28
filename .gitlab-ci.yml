@@ -21,6 +21,11 @@ variables:
   AUTO_BUCKET_ENABLED: "false"
   AIRFLOW_ENABLED: "false"
   AIRFLOW_VERSION: 2.0.0
+  BIG_DATA_GENOMICS_ENABLED: "false"
+  GLOW_VERSION: "io.projectglow:glow-spark2_2.11:0.6.0"
+  GLOW_PY_VERSION: 0.6.0
+  SEQUILA_VERSION: "org.biodatageeks:sequila_2.11:0.5.17"
+  PYSEQUILA_VERSION: 0.1.8
 
 
 .defaultImageVars: &defaultImageVars
@@ -32,6 +37,7 @@ variables:
   MLFLOW_ENABLED: "true"
   AUTO_BUCKET_ENABLED: "true"
   AIRFLOW_ENABLED: "false"
+  BIG_DATA_GENOMICS_ENABLED: "false"
   NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
 
 
@@ -44,6 +50,7 @@ variables:
   MLFLOW_ENABLED: "true"
   AUTO_BUCKET_ENABLED: "true"
   AIRFLOW_ENABLED: "false"
+  BIG_DATA_GENOMICS_ENABLED: "true"
   NOTEBOOKS_REPO: https://github.com/biodatageeks/notebooks
 
 .edugenImageVars: &edugenImageVars
@@ -56,6 +63,7 @@ variables:
   MLFLOW_ENABLED: "false"
   AUTO_BUCKET_ENABLED: "false"
   AIRFLOW_ENABLED: "true"
+  BIG_DATA_GENOMICS_ENABLED: "false"
   NOTEBOOKS_REPO: https://github.com/IMID/edugen_pub
 
 
@@ -68,6 +76,7 @@ variables:
   MLFLOW_ENABLED: "false"
   AUTO_BUCKET_ENABLED: "false"
   AIRFLOW_ENABLED: "true"
+  BIG_DATA_GENOMICS_ENABLED: "true"
   NOTEBOOKS_REPO: https://github.com/IMID/edugen_pub
 
 # --------------------------------- STAGE: version ---------------------------------------------------------------------
@@ -128,6 +137,11 @@ version-tag:
       --build-arg AUTO_BUCKET_ENABLED=$AUTO_BUCKET_ENABLED
       --build-arg AIRFLOW_VERSION=$AIRFLOW_VERSION
       --build-arg AIRFLOW_ENABLED=$AIRFLOW_ENABLED
+      --build-arg BIG_DATA_GENOMICS_ENABLED=$BIG_DATA_GENOMICS_ENABLED
+      --build-arg GLOW_PY_VERSION=$GLOW_PY_VERSION
+      --build-arg GLOW_VERSION=$GLOW_VERSION
+      --build-arg SEQUILA_VERSION=$SEQUILA_VERSION
+      --build-arg PYSEQUILA_VERSION=$PYSEQUILA_VERSION
       -t $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION

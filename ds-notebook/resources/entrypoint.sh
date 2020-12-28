@@ -18,12 +18,8 @@ export PROJECT_ID=$(cat $GOOGLE_APPLICATION_CREDENTIALS | jq '.project_id' | sed
 envsubst < /tmp/.boto_template > $HOME/.boto
 
 ###Packages
-if [ $JUPYTER_KERNEL_NAME == "pysequila" ]; then
-  SPARK_PACKAGES="--packages org.biodatageeks:sequila_2.11:${SEQUILA_VERSION}"
-  source /opt/conda/etc/profile.d/conda.sh
-  conda activate $HOME/venv/$JUPYTER_KERNEL_NAME
-  pip install -U pysequila==$PYSEQUILA_VERSION
-  conda deactivate
+if [ $BIG_DATA_GENOMICS_ENABLED == "true" ]; then
+  SPARK_PACKAGES="--packages ${SEQUILA_VERSION},${GLOW_VERSION}"
 fi
 
 
