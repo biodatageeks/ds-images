@@ -46,13 +46,24 @@ variables:
   AIRFLOW_ENABLED: "false"
   NOTEBOOKS_REPO: https://github.com/biodatageeks/notebooks
 
-
 .edugenImageVars: &edugenImageVars
   JDK_VERSION: 11.0.9.hs-adpt
   SPARK_VERSION: "3.0.1"
   SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
   PYTHON_MINOR: "3.7"
   SCALA_VERSION: 2.12.10
+  JUPYTER_KERNEL_NAME: edugen
+  MLFLOW_ENABLED: "false"
+  AUTO_BUCKET_ENABLED: "false"
+  AIRFLOW_ENABLED: "true"
+  NOTEBOOKS_REPO: https://github.com/IMID/edugen_pub
+
+
+.spark24edugenImageVars: &spark24edugenImageVars
+  SPARK_VERSION: "2.4.3"
+  SPARK_IMAGE: "biodatageeks/spark-py:v2.4.3-3.6.9"
+  PYTHON_MINOR: "3.6.9"
+  SCALA_VERSION: 2.11.12
   JUPYTER_KERNEL_NAME: edugen
   MLFLOW_ENABLED: "false"
   AUTO_BUCKET_ENABLED: "false"
@@ -142,6 +153,13 @@ buildPublishEdugen:
   stage: buildPublish
   variables:
     <<: *edugenImageVars
+  <<: *buildPublish
+  except: [ main ]
+
+buildPublishspark24Edugen:
+  stage: buildPublish
+  variables:
+    <<: *spark24edugenImageVars
   <<: *buildPublish
   except: [ main ]
 
