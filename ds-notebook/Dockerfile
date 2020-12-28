@@ -169,6 +169,7 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
 RUN cd /tmp && wget https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop2-latest.jar && \
     wget https://repo1.maven.org/maven2/com/google/cloud/google-cloud-nio/0.120.0-alpha/google-cloud-nio-0.120.0-alpha-shaded.jar
 
-
+#airflow
+ENV AIRFLOW_HOME=/home/$USER_NAME/airflow
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
