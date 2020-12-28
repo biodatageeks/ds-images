@@ -21,9 +21,11 @@ ARG GATK_VERSION=4.1.9.0
 ARG MLFLOW_VERSION
 ARG MLFLOW_ENABLED
 ARG AUTO_BUCKET_ENABLED
-
+ARG AIRFLOW_ENABLED
+ARG AIRFLOW_VERSION
 ENV MLFLOW_ENABLED=$MLFLOW_ENABLED
 ENV AUTO_BUCKET_ENABLED=$AUTO_BUCKET_ENABLED
+ENV AIRFLOW_ENABLED=$AIRFLOW_ENABLED
 ENV NOTEBOOKS_REPO=$NOTEBOOKS_REPO
 ENV JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
 ENV SERVICE_ACCOUNT=$SERVICE_ACCOUNT
@@ -142,6 +144,9 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
     fi && \
     if [ $MLFLOW_ENABLED == "true" ]; then \
         pip install -U mlflow==$MLFLOW_VERSION; \
+    fi && \
+    if [ $AIRFLOW_ENABLED == "true" ]; then \
+        pip install -U mlflow==$AIRFLOW_VERSION --use-deprecated legacy-resolver; \
     fi && \
     conda deactivate
 
