@@ -22,6 +22,9 @@ if [ $BIG_DATA_GENOMICS_ENABLED == "true" ]; then
   SPARK_PACKAGES="--packages ${SEQUILA_VERSION},${GLOW_VERSION}"
 fi
 
+if [ $MLFLOW_ENABLED == "true" ]; then
+  export MLFLOW_TRACKING_URI=http://localhost:5000
+fi
 
 export PYSPARK_SUBMIT_ARGS="--repositories ${BIODATAGEEKS_REPOS} \
   --jars /tmp/gcs-connector-hadoop2-latest.jar,/tmp/google-cloud-nio-0.120.0-alpha-shaded.jar \
