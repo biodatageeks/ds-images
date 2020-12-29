@@ -18,7 +18,24 @@ ARG SPARK_IMAGE
 ARG GSUTIL_VERSION
 ARG IGV_JUPYTER_VERSION=2.0.4
 ARG GATK_VERSION=4.1.9.0
+ARG MLFLOW_VERSION
+ARG MLFLOW_ENABLED
+ARG AUTO_BUCKET_ENABLED
+ARG AIRFLOW_ENABLED
+ARG AIRFLOW_VERSION
+ARG BIG_DATA_GENOMICS_ENABLED
+ARG GLOW_PY_VERSION
+ARG GLOW_VERSION
+ARG SEQUILA_VERSION
+ARG PYSEQUILA_VERSION
+ARG LAB_DOMAIN
 
+ENV MLFLOW_ENABLED=$MLFLOW_ENABLED
+ENV AUTO_BUCKET_ENABLED=$AUTO_BUCKET_ENABLED
+ENV AIRFLOW_ENABLED=$AIRFLOW_ENABLED
+ENV BIG_DATA_GENOMICS_ENABLED=$BIG_DATA_GENOMICS_ENABLED
+ENV GLOW_VERSION=$GLOW_VERSION
+ENV SEQUILA_VERSION=$SEQUILA_VERSION
 
 ENV NOTEBOOKS_REPO=$NOTEBOOKS_REPO
 ENV JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
@@ -26,6 +43,7 @@ ENV SERVICE_ACCOUNT=$SERVICE_ACCOUNT
 
 ENV SPARK_VERSION=$SPARK_VERSION
 ENV SPARK_IMAGE=$SPARK_IMAGE
+ENV LAB_DOMAIN=$LAB_DOMAIN
 
 RUN apt-get update && apt-get -qq -y install \
     curl \
@@ -83,7 +101,8 @@ ADD resources/.boto_template /tmp/.boto_template
 RUN pip install \
     gsutil==$GSUTIL_VERSION \
     kubernetes==12.0.1 \
-    jupyter-server-proxy==1.5.0
+    jupyter-server-proxy==1.5.0 && \
+    jupyter labextension install @jupyterlab/server-proxy
 
 
 RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
@@ -102,6 +121,12 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
 
 
 ENV PATH=$PATH:/opt/gatk-$GATK_VERSION:/opt/vt
+
+RUN mkdir -p /opt/tools/{bin,logos} && chmod -R 755 /opt/tools/
+ADD resources/bin/*.sh /opt/tools/bin/
+ADD resources/logos/* /opt/tools/logos/
+
+ADD resources/config/jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
 
 USER $NB_USER
 
@@ -129,12 +154,24 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
                        biothings_client \
                        igv-jupyterlab==$IGV_JUPYTER_VERSION; \
     fi && \
+    if [ $MLFLOW_ENABLED == "true" ]; then \
+        pip install -U mlflow==$MLFLOW_VERSION; \
+    fi && \
+    if [ $AIRFLOW_ENABLED == "true" ]; then \
+        pip install -U pip==20.2.4 && \
+        pip install -U apache-airflow==$AIRFLOW_VERSION; \
+    fi && \
+    if [ $BIG_DATA_GENOMICS_ENABLED == "true" ]; then \
+        pip install -U pysequila==$PYSEQUILA_VERSION \
+                     glow.py==$GLOW_PY_VERSION; \
+    fi && \
     conda deactivate
 
 
 RUN cd /tmp && wget https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop2-latest.jar && \
     wget https://repo1.maven.org/maven2/com/google/cloud/google-cloud-nio/0.120.0-alpha/google-cloud-nio-0.120.0-alpha-shaded.jar
 
-
+#airflow
+ENV AIRFLOW_HOME=/home/$USER_NAME/airflow
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
