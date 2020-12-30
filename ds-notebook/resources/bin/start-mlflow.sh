@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-MLFLOW_UI_PORT=${1}
+MLFLOW_UI_PORT=5000
 
 set -x
 
