@@ -10,7 +10,8 @@ mkdir -p $MFLOW_HOME/experiments
 
 source /opt/conda/etc/profile.d/conda.sh
 conda activate $HOME/venv/$JUPYTER_KERNEL_NAME
-mlflow db upgrade
+
+mlflow db upgrade sqlite:///${MFLOW_HOME}/experiments/mlflow.db
 mlflow server --host 0.0.0.0 --port $MLFLOW_UI_PORT \
 --default-artifact-root gs://bdg-lab-${USER}/mlflow/artifacts \
 --backend-store-uri sqlite:///${MFLOW_HOME}/experiments/mlflow.db &
