@@ -142,10 +142,7 @@ RUN source /opt/conda/etc/profile.d/conda.sh && \
                     pandas==1.1.4 \
                     seaborn==0.11.0 \
                     gsutil==$GSUTIL_VERSION \
-                    google-cloud-storage==1.33.0 \
-                    mlserver \
-                    mlserver-sklearn \
-                    mlserver-mllib && \
+                    google-cloud-storage==1.33.0 && \
     python -m ipykernel install --user --name $JUPYTER_KERNEL_NAME --display-name $JUPYTER_KERNEL_NAME && \
     conda deactivate
 
