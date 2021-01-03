@@ -155,7 +155,8 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
                        igv-jupyterlab==$IGV_JUPYTER_VERSION; \
     fi && \
     if [ $MLFLOW_ENABLED == "true" ]; then \
-        pip install -U mlflow==$MLFLOW_VERSION; \
+        pip install -U mlflow==$MLFLOW_VERSION \
+                       PyArrow==0.15.1; \
     fi && \
     if [ $AIRFLOW_ENABLED == "true" ]; then \
         pip install -U pip==20.2.4 && \

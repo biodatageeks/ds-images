@@ -33,7 +33,7 @@ variables:
 
 .defaultImageVars: &defaultImageVars
   SPARK_VERSION: "3.0.1"
-  SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1-ds"
+  SPARK_IMAGE: biodatageeks/spark-py:v3.0.1-ds-0.1.6-g805fea4
   PYTHON_MINOR: "3.7"
   SCALA_VERSION: 2.12.10
   JUPYTER_KERNEL_NAME: datascience
@@ -218,7 +218,7 @@ buildPublishSparkPy3:
       --pull
       --build-arg BASE_IMAGE=$SPARK_BASE_IMAGE
       --build-arg MLFLOW_VERSION=$MLFLOW_VERSION
-      -t $NAMESPACE_IMAGE_NAME:$VERSION
+      -t $NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
   tags: [ docker ]
