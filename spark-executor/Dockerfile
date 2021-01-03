@@ -1,7 +1,9 @@
-FROM biodatageeks/spark-py:v3.0.1
+ARG BASE_IMAGE
+FROM $BASE_IMAGE
 
 ARG spark_uid=185
+ARG MLFLOW_VERSION
 USER root
-RUN pip3 install mlflow==1.13.1
-
+RUN pip3 install mlflow==${MLFLOW_VERSION} \
+                 PyArrow==0.15.1
 USER ${spark_uid}

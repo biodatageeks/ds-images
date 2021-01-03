@@ -15,6 +15,8 @@ variables:
   SERVICE_ACCOUNT: "ds-lab-sa"
   HUB_IMAGE_NAME: ds-hub
   HUB_BASE_IMAGE: jupyterhub/k8s-hub:0.9.1
+  SPARK_IMAGE_NAME: "spark-py"
+  SPARK_BASE_IMAGE: "biodatageeks/spark-py:v3.0.1"
   GSUTIL_VERSION: "4.55"
   MLFLOW_VERSION: 1.13.1
   MLFLOW_ENABLED: "false"
@@ -198,5 +200,26 @@ buildPublishHub:
       -t $NAMESPACE_IMAGE_NAME:$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:$VERSION
+  tags: [ docker ]
+  except: [ main ]
+
+buildPublishSparkPy3:
+  stage: buildPublish
+  variables:
+    NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
+  image:
+    name: docker:$DOCKER_VERSION
+  before_script:
+    - source $VERSION_FILE
+    - docker login -u $DOCKER_USER -p $DOCKER_PASSWD docker.io
+  script:
+    - cd spark-executor
+    - docker build
+      --pull
+      --build-arg BASE_IMAGE=$SPARK_BASE_IMAGE
+      --build-arg MLFLOW_VERSION=$MLFLOW_VERSION
+      -t $NAMESPACE_IMAGE_NAME:$VERSION
+      .
+    - docker push $NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
   tags: [ docker ]
   except: [ main ]
