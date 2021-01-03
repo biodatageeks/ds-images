@@ -26,6 +26,8 @@ if [ $MLFLOW_ENABLED == "true" ]; then
   export MLFLOW_TRACKING_URI=http://localhost:5000
 fi
 
+export PYSPARK_PYTHON=python3
+
 export PYSPARK_SUBMIT_ARGS="--repositories ${BIODATAGEEKS_REPOS} \
   --jars /tmp/gcs-connector-hadoop2-latest.jar,/tmp/google-cloud-nio-0.120.0-alpha-shaded.jar \
   --conf spark.hadoop.google.cloud.auth.service.account.enable=true \
@@ -51,10 +53,11 @@ export PYSPARK_SUBMIT_ARGS="--repositories ${BIODATAGEEKS_REPOS} \
   --conf spark.kubernetes.namespace=default \
   --conf spark.driver.host=jupyter-service-$JUPYTERHUB_USER \
   --conf spark.driver.bindAddress=$HOSTNAME \
+  --conf spark.executorEnv.PYSPARK_PYTHON=$PYSPARK_PYTHON \
   $SPARK_PACKAGES \
    pyspark-shell"
 
-export PYSPARK_PYTHON=python3
+
 
 #prepare notebooks
 mkdir -p $HOME/work/git
