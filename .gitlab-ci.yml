@@ -39,7 +39,7 @@ variables:
 
 .defaultImageVars: &defaultImageVars
   SPARK_VERSION: "3.0.1"
-  SPARK_IMAGE: biodatageeks/spark-py:v3.0.1-ds-0.1.6-g805fea4
+  SPARK_IMAGE: gcr.io/studiapodyplomowe/biodatageeks/spark-py:v3.0.1-ds-0.1.6-gc19d60a
   PYTHON_MINOR: "3.7"
   SCALA_VERSION: 2.12.10
   JUPYTER_KERNEL_NAME: datascience
@@ -246,5 +246,22 @@ buildPublishSparkPy3:
       -t $NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
+  tags: [ docker ]
+  except: [ main ]
+
+publishGCRSparkPy3:
+  stage: publishGCR
+  variables:
+    NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
+  image:
+    name: google/cloud-sdk:$CLOUD_SDK_VERSION
+  before_script:
+    - source $VERSION_FILE
+    - gcloud auth activate-service-account $GCR_SA --key-file=$GCR_SA_KEY
+    - gcloud auth configure-docker
+  script:
+    - cd spark-executor
+    - docker tag $NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
+    - docker push gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
   tags: [ docker ]
   except: [ main ]
