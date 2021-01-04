@@ -4,6 +4,7 @@ stages:
   - publishGCR
 
 variables:
+  PROJECT_NAME: studiapodyplomowe
   GIT_SUBMODULE_STRATEGY: recursive
   VERSION_FILE: version.sh
   GIT_DEPTH: 500
@@ -32,6 +33,8 @@ variables:
   LAB_DOMAIN: lab.biodatageeks.org
   GCR_SA: container-admin@studiapodyplomowe.iam.gserviceaccount.com
   GCR_SA_KEY: "/root/gcr/sa.json"
+  CLOUD_SDK_VERSION: 321.0.0
+
 
 
 .defaultImageVars: &defaultImageVars
@@ -159,14 +162,15 @@ version-tag:
 
 .publishGCR: &publishGCR
   image:
-    name: docker:$DOCKER_VERSION
+    name: google/cloud-sdk:$CLOUD_SDK_VERSION
   before_script:
     - source $VERSION_FILE
     - gcloud auth activate-service-account $GCR_SA --key-file=$GCR_SA_KEY
     - gcloud auth configure-docker
   script:
     - cd $IMAGE_NAME/
-    - docker push eu.gcr.io/$NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
+    - docker tag $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
+    - docker push gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
   tags: [ docker ]
 
 buildPublishDefault:
