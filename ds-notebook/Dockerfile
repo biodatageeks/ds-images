@@ -104,6 +104,12 @@ RUN pip install \
     jupyter-server-proxy==1.5.0 && \
     jupyter labextension install @jupyterlab/server-proxy
 
+RUN cd /tmp && \
+    git clone https://github.com/yuvipanda/jupyter-launcher-shortcuts.git && \
+    cd jupyter-launcher-shortcuts && \
+    pip install -e . && \
+    jupyter labextension install jupyterlab-launcher-shortcuts && \
+    jupyter serverextension enable jupyter_launcher_shortcuts
 
 RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
         pip install -U igv-jupyterlab==$IGV_JUPYTER_VERSION && \
