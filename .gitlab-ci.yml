@@ -34,6 +34,7 @@ variables:
   GCR_SA: container-admin@studiapodyplomowe.iam.gserviceaccount.com
   GCR_SA_KEY: "/root/gcr/sa.json"
   CLOUD_SDK_VERSION: 321.0.0
+  KUBECTL_VERSION: 1.20.0
 
 
 
@@ -154,6 +155,7 @@ version-tag:
       --build-arg SEQUILA_VERSION=$SEQUILA_VERSION
       --build-arg PYSEQUILA_VERSION=$PYSEQUILA_VERSION
       --build-arg LAB_DOMAIN=$LAB_DOMAIN
+      --build-arg KUBECTL_VERSION=$KUBECTL_VERSION
       -t $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION

@@ -44,6 +44,7 @@ ENV SERVICE_ACCOUNT=$SERVICE_ACCOUNT
 ENV SPARK_VERSION=$SPARK_VERSION
 ENV SPARK_IMAGE=$SPARK_IMAGE
 ENV LAB_DOMAIN=$LAB_DOMAIN
+ARG KUBECTL_VERSION
 
 RUN apt-get update && apt-get -qq -y install \
     curl \
@@ -133,6 +134,11 @@ ADD resources/bin/*.sh /opt/tools/bin/
 ADD resources/logos/* /opt/tools/logos/
 
 ADD resources/config/jupyter_notebook_config.py /etc/jupyter/jupyter_notebook_config.py
+
+RUN cd /tmp && \
+    curl -LO https://storage.googleapis.com/kubernetes-release/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl && \
+    chmod +x ./kubectl && \
+    mv ./kubectl /usr/local/bin/kubectl
 
 USER $NB_USER
 
