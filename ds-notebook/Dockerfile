@@ -104,6 +104,12 @@ RUN pip install \
     jupyter-server-proxy==1.5.0 && \
     jupyter labextension install @jupyterlab/server-proxy
 
+RUN cd /tmp && \
+    git clone https://github.com/yuvipanda/jupyter-launcher-shortcuts.git && \
+    cd jupyter-launcher-shortcuts && \
+    pip install -e . && \
+    jupyter labextension install jupyterlab-launcher-shortcuts && \
+    jupyter serverextension enable jupyter_launcher_shortcuts
 
 RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
         pip install -U igv-jupyterlab==$IGV_JUPYTER_VERSION && \
@@ -155,7 +161,8 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
                        igv-jupyterlab==$IGV_JUPYTER_VERSION; \
     fi && \
     if [ $MLFLOW_ENABLED == "true" ]; then \
-        pip install -U mlflow==$MLFLOW_VERSION; \
+        pip install -U mlflow==$MLFLOW_VERSION \
+                       PyArrow==0.15.1; \
     fi && \
     if [ $AIRFLOW_ENABLED == "true" ]; then \
         pip install -U pip==20.2.4 && \

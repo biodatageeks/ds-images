@@ -1,8 +1,10 @@
 stages:
   - version
   - buildPublish
+  - publishGCR
 
 variables:
+  PROJECT_NAME: studiapodyplomowe
   GIT_SUBMODULE_STRATEGY: recursive
   VERSION_FILE: version.sh
   GIT_DEPTH: 500
@@ -15,8 +17,10 @@ variables:
   SERVICE_ACCOUNT: "ds-lab-sa"
   HUB_IMAGE_NAME: ds-hub
   HUB_BASE_IMAGE: jupyterhub/k8s-hub:0.9.1
+  SPARK_IMAGE_NAME: "spark-py"
+  SPARK_BASE_IMAGE: "biodatageeks/spark-py:v3.0.1"
   GSUTIL_VERSION: "4.55"
-  MLFLOW_VERSION: 1.12.1
+  MLFLOW_VERSION: 1.13.1
   MLFLOW_ENABLED: "false"
   AUTO_BUCKET_ENABLED: "false"
   AIRFLOW_ENABLED: "false"
@@ -27,11 +31,15 @@ variables:
   SEQUILA_VERSION: "org.biodatageeks:sequila_2.11:0.5.17"
   PYSEQUILA_VERSION: 0.1.8
   LAB_DOMAIN: lab.biodatageeks.org
+  GCR_SA: container-admin@studiapodyplomowe.iam.gserviceaccount.com
+  GCR_SA_KEY: "/root/gcr/sa.json"
+  CLOUD_SDK_VERSION: 321.0.0
+
 
 
 .defaultImageVars: &defaultImageVars
   SPARK_VERSION: "3.0.1"
-  SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
+  SPARK_IMAGE: gcr.io/studiapodyplomowe/biodatageeks/spark-py:v3.0.1-ds-0.1.6-gc19d60a
   PYTHON_MINOR: "3.7"
   SCALA_VERSION: 2.12.10
   JUPYTER_KERNEL_NAME: datascience
@@ -152,12 +160,31 @@ version-tag:
   tags: [ docker ]
 
 
+.publishGCR: &publishGCR
+  image:
+    name: google/cloud-sdk:$CLOUD_SDK_VERSION
+  before_script:
+    - source $VERSION_FILE
+    - gcloud auth activate-service-account $GCR_SA --key-file=$GCR_SA_KEY
+    - gcloud auth configure-docker
+  script:
+    - cd $IMAGE_NAME/
+    - docker tag $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
+    - docker push gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
+  tags: [ docker ]
 
 buildPublishDefault:
   stage: buildPublish
   variables:
     <<: *defaultImageVars
   <<: *buildPublish
+  except: [ main ]
+
+publishGCRDefault:
+  stage: publishGCR
+  variables:
+    <<: *defaultImageVars
+  <<: *publishGCR
   except: [ main ]
 
 buildPublish24:
@@ -198,5 +225,43 @@ buildPublishHub:
       -t $NAMESPACE_IMAGE_NAME:$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:$VERSION
+  tags: [ docker ]
+  except: [ main ]
+
+buildPublishSparkPy3:
+  stage: buildPublish
+  variables:
+    NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
+  image:
+    name: docker:$DOCKER_VERSION
+  before_script:
+    - source $VERSION_FILE
+    - docker login -u $DOCKER_USER -p $DOCKER_PASSWD docker.io
+  script:
+    - cd spark-executor
+    - docker build
+      --pull
+      --build-arg BASE_IMAGE=$SPARK_BASE_IMAGE
+      --build-arg MLFLOW_VERSION=$MLFLOW_VERSION
+      -t $NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
+      .
+    - docker push $NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
+  tags: [ docker ]
+  except: [ main ]
+
+publishGCRSparkPy3:
+  stage: publishGCR
+  variables:
+    NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
+  image:
+    name: google/cloud-sdk:$CLOUD_SDK_VERSION
+  before_script:
+    - source $VERSION_FILE
+    - gcloud auth activate-service-account $GCR_SA --key-file=$GCR_SA_KEY
+    - gcloud auth configure-docker
+  script:
+    - cd spark-executor
+    - docker tag $NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
+    - docker push gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
   tags: [ docker ]
   except: [ main ]

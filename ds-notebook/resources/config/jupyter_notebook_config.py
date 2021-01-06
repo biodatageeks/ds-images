@@ -40,6 +40,14 @@ if os.getenv('AIRFLOW_ENABLED', 'false') == 'true':
         }
     }
 
+c.LauncherShortcuts.shortcuts = {
+    'spark': {
+        'title': 'Spark UI',
+        'target': f'https://{os.getenv("LAB_DOMAIN", "localhost")}/user/{os.environ["USER"]}/proxy/4040/jobs/',
+        'icon_path': '/opt/tools/logos/spark.svg'
+    }
+}
+
 
 # Generate a self-signed certificate
 if 'GEN_CERT' in os.environ:
