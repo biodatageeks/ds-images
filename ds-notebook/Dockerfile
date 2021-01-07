@@ -172,7 +172,8 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
     fi && \
     if [ $AIRFLOW_ENABLED == "true" ]; then \
         pip install -U pip==20.2.4 && \
-        pip install -U apache-airflow==$AIRFLOW_VERSION; \
+        pip install -U apache-airflow==$AIRFLOW_VERSION \
+                       apache-airflow-providers-cncf-kubernetes; \
     fi && \
     if [ $BIG_DATA_GENOMICS_ENABLED == "true" ]; then \
         pip install -U pysequila==$PYSEQUILA_VERSION \
