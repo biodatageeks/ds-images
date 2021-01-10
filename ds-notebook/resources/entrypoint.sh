@@ -19,7 +19,7 @@ envsubst < /tmp/.boto_template > $HOME/.boto
 
 ###Packages
 if [ $BIG_DATA_GENOMICS_ENABLED == "true" ]; then
-  SPARK_PACKAGES="--packages ${SEQUILA_VERSION},${GLOW_VERSION}"
+  SPARK_PACKAGES="--packages ${SEQUILA_VERSION},${GLOW_VERSION},${SEQTENDER_VERSION}"
 fi
 
 if [ $MLFLOW_ENABLED == "true" ]; then
