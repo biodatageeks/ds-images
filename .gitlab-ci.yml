@@ -40,6 +40,7 @@ variables:
   GCS_NIO_VERSION: 0.122.4
   GCS_CONNECTOR_VERSION: hadoop2-1.9.17
   VEP_VERSION: "102.0"
+  SPARK_PVC_NAME: pvc-shared-pipeline
 
 
 
@@ -87,7 +88,7 @@ variables:
 
 .spark24edugenImageVars: &spark24edugenImageVars
   SPARK_VERSION: "2.4.3"
-  SPARK_IMAGE: "biodatageeks/spark-py:v2.4.3-edugen-0.1.7-g38fdc18"
+  SPARK_IMAGE: "biodatageeks/spark-py:v2.4.3-edugen-0.1.7-g47bd6ff"
   PYTHON_MINOR: "3.6.9"
   SCALA_VERSION: 2.11.12
   JUPYTER_KERNEL_NAME: edugen
@@ -167,6 +168,7 @@ version-tag:
       --build-arg GCS_NIO_VERSION=$GCS_NIO_VERSION
       --build-arg GCS_CONNECTOR_VERSION=$GCS_CONNECTOR_VERSION
       --build-arg VEP_VERSION=$VEP_VERSION
+      --build-arg SPARK_PVC_NAME=$SPARK_PVC_NAME
       -t $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
