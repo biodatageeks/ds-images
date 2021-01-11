@@ -7,6 +7,7 @@ ARG GLOW_PY_VERSION
 ARG JUPYTER_KERNEL_NAME
 
 ARG BWA_VERSION=0.7.17
+ARG VEP_VERSION
 
 
 USER root
@@ -16,8 +17,40 @@ RUN if [ $JUPYTER_KERNEL_NAME == "datascience" ]; then \
     fi
 
 RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
-        pip3.6 install glow.py==$GLOW_PY_VERSION; \
+        apk add gcc \
+                g++ \
+                python3-dev \
+                zlib-dev \
+                bzip2-dev \
+                xz-dev \
+                curl-dev \
+                make \
+                perl \
+                perl-dev \
+                perl-dbi \
+                perl-dbd-mysql \
+                perl-archive-zip \
+                apkbuild-cpan \
+                perl-app-cpanminus \
+                git  \
+                curl && \
+         cd /tmp && \
+         git clone https://github.com/atks/vt.git  && \
+         cd vt && \
+         git checkout 0.57721 && \
+         make && \
+         mv vt /usr/bin && \
+         cd /tmp/ && git clone https://github.com/Ensembl/ensembl-vep.git && \
+         cd ensembl-vep/ && \
+         cpanm inc::latest && \
+         cpanm Module::Build && \
+         git checkout release/$VEP_VERSION && \
+         perl INSTALL.pl -a a && \
+         mkdir -p /opt && mv /tmp/ensembl-vep /opt/ && \
+         pip3.6 install glow.py==$GLOW_PY_VERSION; \
     fi
+
+ENV PATH=$PATH:/opt/ensembl-vep
 
 ADD http://downloads.sourceforge.net/project/bio-bwa/bwa-${BWA_VERSION}.tar.bz2 /tmp/
 

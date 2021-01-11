@@ -39,6 +39,7 @@ variables:
   KUBECTL_VERSION: 1.20.0
   GCS_NIO_VERSION: 0.122.4
   GCS_CONNECTOR_VERSION: hadoop2-1.9.17
+  VEP_VERSION: "102.0"
 
 
 
@@ -283,6 +284,7 @@ buildPublishSparkPy24:
       --build-arg MLFLOW_VERSION=$MLFLOW_VERSION
       --build-arg JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
       --build-arg GLOW_PY_VERSION=$GLOW_PY_VERSION
+      --build-arg VEP_VERSION=$VEP_VERSION
       -t ${NAMESPACE_IMAGE_NAME}:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
       .
     - docker push ${NAMESPACE_IMAGE_NAME}:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
@@ -302,7 +304,7 @@ publishGCRSparkPy3:
     - gcloud auth configure-docker
   script:
     - cd spark-executor
-    - docker tag $NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
-    - docker push gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
+    - docker tag $NAMESPACE_IMAGE_NAME:v3.0.1-${JUPYTER_KERNEL_NAME}-$VERSION gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v3.0.1-${JUPYTER_KERNEL_NAME}-$VERSION
+    - docker push gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v3.0.1-${JUPYTER_KERNEL_NAME}-$VERSION
   tags: [ docker ]
   except: [ main ]
