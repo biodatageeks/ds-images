@@ -148,6 +148,8 @@ RUN cd /tmp && \
     chmod +x ./kubectl && \
     mv ./kubectl /usr/local/bin/kubectl
 
+RUN mkdir -p /mnt/data && chown -R $NB_USER /mnt/data
+
 USER $NB_USER
 
 

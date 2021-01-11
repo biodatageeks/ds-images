@@ -296,6 +296,7 @@ publishGCRSparkPy3:
   stage: publishGCR
   variables:
     NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
+    JUPYTER_KERNEL_NAME: datascience
   image:
     name: google/cloud-sdk:$CLOUD_SDK_VERSION
   before_script:

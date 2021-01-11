@@ -67,5 +67,5 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
                 && rm -rf /var/cache/apk/* /tmp/* \
                 && apk del deps ; \
     fi
-
+RUN mkdir -p /mnt/data && chown -R $spark_uid /mnt/data
 USER ${spark_uid}
