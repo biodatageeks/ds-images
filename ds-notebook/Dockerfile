@@ -33,6 +33,7 @@ ARG PYSEQTENDER_VERSION
 ARG LAB_DOMAIN
 ARG GCS_NIO_VERSION
 ARG KUBECTL_VERSION
+ARG GCS_CONNECTOR_VERSION
 
 ENV MLFLOW_ENABLED=$MLFLOW_ENABLED
 ENV AUTO_BUCKET_ENABLED=$AUTO_BUCKET_ENABLED
@@ -50,6 +51,7 @@ ENV SPARK_VERSION=$SPARK_VERSION
 ENV SPARK_IMAGE=$SPARK_IMAGE
 ENV LAB_DOMAIN=$LAB_DOMAIN
 ENV GCS_NIO_VERSION=$GCS_NIO_VERSION
+ENV GCS_CONNECTOR_VERSION=$GCS_CONNECTOR_VERSION
 
 
 RUN apt-get update && apt-get -qq -y install \
@@ -188,8 +190,7 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
     fi && \
     conda deactivate
 
-
-RUN cd /tmp && wget https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop2-latest.jar && \
+RUN cd /tmp && wget https://repo1.maven.org/maven2/com/google/cloud/bigdataoss/gcs-connector/${GCS_CONNECTOR_VERSION}/gcs-connector-${GCS_CONNECTOR_VERSION}-shaded.jar && \
     wget https://repo1.maven.org/maven2/com/google/cloud/google-cloud-nio/${GCS_NIO_VERSION}/google-cloud-nio-${GCS_NIO_VERSION}-shaded.jar
 
 #airflow
