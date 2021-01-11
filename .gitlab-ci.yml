@@ -243,6 +243,7 @@ buildPublishSparkPy3:
   stage: buildPublish
   variables:
     NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
+    JUPYTER_KERNEL_NAME: datascience
   image:
     name: docker:$DOCKER_VERSION
   before_script:
@@ -254,11 +255,40 @@ buildPublishSparkPy3:
       --pull
       --build-arg BASE_IMAGE=$SPARK_BASE_IMAGE
       --build-arg MLFLOW_VERSION=$MLFLOW_VERSION
-      -t $NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
+      --build-arg JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
+      --build-arg GLOW_PY_VERSION=$GLOW_PY_VERSION
+      -t $NAMESPACE_IMAGE_NAME:v3.0.1-${JUPYTER_KERNEL_NAME}-$VERSION
       .
-    - docker push $NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
+    - docker push $NAMESPACE_IMAGE_NAME:v3.0.1-${JUPYTER_KERNEL_NAME}-$VERSION
   tags: [ docker ]
   except: [ main ]
+
+
+buildPublishSparkPy24:
+  stage: buildPublish
+  variables:
+    NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
+    SPARK_BASE_IMAGE: biodatageeks/spark-py:v2.4.3-3.6.9
+    JUPYTER_KERNEL_NAME: edugen
+  image:
+    name: docker:$DOCKER_VERSION
+  before_script:
+    - source $VERSION_FILE
+    - docker login -u $DOCKER_USER -p $DOCKER_PASSWD docker.io
+  script:
+    - cd spark-executor
+    - docker build
+      --pull
+      --build-arg BASE_IMAGE=$SPARK_BASE_IMAGE
+      --build-arg MLFLOW_VERSION=$MLFLOW_VERSION
+      --build-arg JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
+      --build-arg GLOW_PY_VERSION=$GLOW_PY_VERSION
+      -t ${NAMESPACE_IMAGE_NAME}:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
+      .
+    - docker push ${NAMESPACE_IMAGE_NAME}:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
+  tags: [ docker ]
+  except: [ main ]
+
 
 publishGCRSparkPy3:
   stage: publishGCR
