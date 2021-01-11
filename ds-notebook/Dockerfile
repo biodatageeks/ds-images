@@ -31,6 +31,8 @@ ARG PYSEQUILA_VERSION
 ARG SEQTENDER_VERSION
 ARG PYSEQTENDER_VERSION
 ARG LAB_DOMAIN
+ARG GCS_NIO_VERSION
+ARG KUBECTL_VERSION
 
 ENV MLFLOW_ENABLED=$MLFLOW_ENABLED
 ENV AUTO_BUCKET_ENABLED=$AUTO_BUCKET_ENABLED
@@ -47,7 +49,8 @@ ENV SERVICE_ACCOUNT=$SERVICE_ACCOUNT
 ENV SPARK_VERSION=$SPARK_VERSION
 ENV SPARK_IMAGE=$SPARK_IMAGE
 ENV LAB_DOMAIN=$LAB_DOMAIN
-ARG KUBECTL_VERSION
+ENV GCS_NIO_VERSION=$GCS_NIO_VERSION
+
 
 RUN apt-get update && apt-get -qq -y install \
     curl \
@@ -187,7 +190,7 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
 
 
 RUN cd /tmp && wget https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop2-latest.jar && \
-    wget https://repo1.maven.org/maven2/com/google/cloud/google-cloud-nio/0.120.0-alpha/google-cloud-nio-0.120.0-alpha-shaded.jar
+    wget https://repo1.maven.org/maven2/com/google/cloud/google-cloud-nio/${GCS_NIO_VERSION}/google-cloud-nio-${GCS_NIO_VERSION}-shaded.jar
 
 #airflow
 ENV AIRFLOW_HOME=/home/$USER_NAME/airflow
