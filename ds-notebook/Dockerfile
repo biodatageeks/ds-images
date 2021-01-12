@@ -152,7 +152,7 @@ RUN cd /tmp && \
     mv ./kubectl /usr/local/bin/kubectl
 
 RUN mkdir -p /mnt/data && chown -R $NB_USER /mnt/data
-
+ADD resources/edugen/bin/* /usr/local/bin/
 USER $NB_USER
 
 
