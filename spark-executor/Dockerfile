@@ -1,7 +1,7 @@
 ARG BASE_IMAGE
 FROM $BASE_IMAGE
 
-ARG spark_uid=1000
+ARG spark_uid=185
 ARG MLFLOW_VERSION
 ARG GLOW_PY_VERSION
 ARG JUPYTER_KERNEL_NAME
@@ -69,4 +69,5 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
                 && apk del deps ; \
     fi
 RUN mkdir -p /mnt/data && chown -R $spark_uid /mnt/data
+RUN chown -R $spark_uid /opt/spark/work-dir
 USER ${spark_uid}
