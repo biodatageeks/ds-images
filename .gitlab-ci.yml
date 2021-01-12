@@ -28,9 +28,9 @@ variables:
   BIG_DATA_GENOMICS_ENABLED: "false"
   GLOW_VERSION: "io.projectglow:glow-spark2_2.11:0.6.0"
   GLOW_PY_VERSION: 0.6.0
-  SEQUILA_VERSION: "org.biodatageeks:sequila_2.11:0.5.17"
+  SEQUILA_VERSION: "org.biodatageeks:sequila_2.11:0.5.19"
   PYSEQUILA_VERSION: 0.1.8
-  SEQTENDER_VERSION: "org.biodatageeks:seqtender_2.11:0.3.4"
+  SEQTENDER_VERSION: "org.biodatageeks:seqtender_2.11:0.3.6"
   PYSEQTENDER_VERSION: 0.1.1
   LAB_DOMAIN: lab.biodatageeks.org
   GCR_SA: container-admin@studiapodyplomowe.iam.gserviceaccount.com

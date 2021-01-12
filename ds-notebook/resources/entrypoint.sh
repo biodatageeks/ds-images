@@ -10,7 +10,7 @@ BIODATAGEEKS_REPOS=${BIODATAGEEKS_REPOS:-"https://oss.sonatype.org/content/repos
 #save GCS key
 : "${DS_LAB_GCS_KEY:?GCS key is missing!}"
 
-SECRETS_MOUNT_DIR=/tmp/secrets
+export SECRETS_MOUNT_DIR=/tmp/secrets
 mkdir -p $SECRETS_MOUNT_DIR && echo $DS_LAB_GCS_KEY > $SECRETS_MOUNT_DIR/$SERVICE_ACCOUNT.json
 export GOOGLE_APPLICATION_CREDENTIALS=$SECRETS_MOUNT_DIR/$SERVICE_ACCOUNT.json
 export PROJECT_ID=$(cat $GOOGLE_APPLICATION_CREDENTIALS | jq '.project_id' | sed 's/"//g')
