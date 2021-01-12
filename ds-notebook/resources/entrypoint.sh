@@ -50,6 +50,7 @@ export PYSPARK_SUBMIT_ARGS="--repositories ${BIODATAGEEKS_REPOS} \
   --conf spark.kubernetes.executor.request.cores=0.4 \
   --conf spark.kubernetes.executor.volumes.persistentVolumeClaim.${SPARK_PVC_NAME}.options.claimName=${SPARK_PVC_NAME} \
   --conf spark.kubernetes.executor.volumes.persistentVolumeClaim.${SPARK_PVC_NAME}.mount.path=/mnt/data \
+  --conf spark.kubernetes.executor.volumes.persistentVolumeClaim.${SPARK_PVC_NAME}.mount.readOnly=true \
   --conf spark.driver.port=29010 \
   --conf spark.blockManager.port=29011 \
   --conf spark.kubernetes.namespace=default \

@@ -68,6 +68,19 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
                 && rm -rf /var/cache/apk/* /tmp/* \
                 && apk del deps ; \
     fi
+ENV BOWTIE2_VERSION 2.2.8
+
+RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
+    apk add --no-cache \
+        perl \
+        wget \
+        openssl \
+        ca-certificates \
+        libc6-compat \
+        libstdc++ \
+        && cd /tmp && wget https://github.com/BenLangmead/bowtie2/archive/v${BOWTIE2_VERSION}.tar.gz  && tar zxvf  v${BOWTIE2_VERSION}.tar.gz && \
+        cd bowtie2-${BOWTIE2_VERSION}/ && make && make install ; \
+    fi
 RUN mkdir -p /mnt/data && chown -R $spark_uid /mnt/data
 RUN chown -R $spark_uid /opt/spark/work-dir
 USER ${spark_uid}
