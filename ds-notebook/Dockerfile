@@ -133,12 +133,21 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
         unzip gatk-$GATK_VERSION.zip && \
         rm -rf gatk-$GATK_VERSION.zip && \
         cd /opt && git clone https://github.com/atks/vt.git  && \
-        cd vt && git checkout 0.57721 && make ;\
+        cd vt && git checkout 0.57721 && make &&\
+        apt -qq -y install libmodule-build-perl \
+                    libdbi-perl \
+                    libdbd-mysql-perl \
+                    build-essential \
+                    zlib1g-dev && \
+        cd /tmp && git clone https://github.com/Ensembl/ensembl-vep.git && \
+        cd ensembl-vep && git checkout release/$VEP_VERSION && \
+        ./INSTALL.pl -a a && \
+        mv /tmp/ensembl-vep /opt/ ;\
     fi
 
 
 
-ENV PATH=$PATH:/opt/gatk-$GATK_VERSION:/opt/vt
+ENV PATH=$PATH:/opt/gatk-$GATK_VERSION:/opt/vt:/opt/ensembl-vep
 
 RUN mkdir -p /opt/tools/{bin,logos} && chmod -R 755 /opt/tools/
 ADD resources/bin/*.sh /opt/tools/bin/
