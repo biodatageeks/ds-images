@@ -88,7 +88,7 @@ variables:
 
 .spark24edugenImageVars: &spark24edugenImageVars
   SPARK_VERSION: "2.4.3"
-  SPARK_IMAGE: "biodatageeks/spark-py:v2.4.3-edugen-0.1.7-g30cee04"
+  SPARK_IMAGE: "biodatageeks/spark-py:v2.4.3-edugen-0.1.7-g38c51ef"
   PYTHON_MINOR: "3.6.9"
   SCALA_VERSION: 2.11.12
   JUPYTER_KERNEL_NAME: edugen
