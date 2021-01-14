@@ -3,6 +3,7 @@ echo "####Running GATK with users' params: $@ on Kubernetes"
 gatk HaplotypeCallerSpark \
   --spark-runner SPARK \
   --spark-master k8s://https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT \
+  --conf spark.jars=/tmp/gcs-connector-${GCS_CONNECTOR_VERSION}-shaded.jar,/tmp/google-cloud-nio-${GCS_NIO_VERSION}-shaded.jar \
   --conf spark.hadoop.google.cloud.auth.service.account.enable=true \
   --conf spark.hadoop.google.cloud.auth.service.account.json.keyfile=$GOOGLE_APPLICATION_CREDENTIALS \
   --conf spark.kubernetes.driverEnv.GCS_PROJECT_ID=$PROJECT_ID \
@@ -14,7 +15,7 @@ gatk HaplotypeCallerSpark \
   --conf spark.hadoop.fs.gs.project.id=$PROJECT_ID \
   --conf spark.hadoop.fs.gs.impl=com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem \
   --conf spark.hadoop.fs.AbstractFileSystem.gs.impl=com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS \
-  --conf spark.kubernetes.container.image=$SPARK_IMAGE \
+  --conf spark.kubernetes.container.image=biodatageeks/spark-py:v2.4.3-edugen-0.1.7-gatk \
   --conf spark.kubernetes.authenticate.driver.serviceAccountName=$SERVICE_ACCOUNT \
   --conf spark.kubernetes.authenticate.serviceAccountName=$SERVICE_ACCOUNT \
   --conf spark.kubernetes.executor.podNamePrefix=gatk-exec-$USER \
