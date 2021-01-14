@@ -81,6 +81,20 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
         && cd /tmp && wget https://github.com/BenLangmead/bowtie2/archive/v${BOWTIE2_VERSION}.tar.gz  && tar zxvf  v${BOWTIE2_VERSION}.tar.gz && \
         cd bowtie2-${BOWTIE2_VERSION}/ && make && make install ; \
     fi
+
+ARG SAMTOOLS_VERSION=1.11
+
+RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
+     apk add --update pcre-dev openssl-dev \
+     && apk add --virtual build-dependencies build-base curl \
+     && curl -L -o samtools-${SAMTOOLS_VERSION}.tar.bz2 \
+        http://jaist.dl.sourceforge.net/project/samtools/samtools/${SAMTOOLS_VERSION}/samtools-${SAMTOOLS_VERSION}.tar.bz2 \
+     && tar jxvf samtools-${SAMTOOLS_VERSION}.tar.bz2  \
+     && cd samtools-${SAMTOOLS_VERSION}/ \
+     && ./configure --without-curses \
+     && make \
+     && make install; \
+    fi
 RUN mkdir -p /mnt/data && chown -R $spark_uid /mnt/data
 RUN chown -R $spark_uid /opt/spark/work-dir
 USER ${spark_uid}
