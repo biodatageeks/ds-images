@@ -88,7 +88,7 @@ variables:
 
 .spark24edugenImageVars: &spark24edugenImageVars
   SPARK_VERSION: "2.4.3"
-  SPARK_IMAGE: "biodatageeks/spark-py:v2.4.3-edugen-0.1.7-g38c51ef"
+  SPARK_IMAGE: "gcr.io/studiapodyplomowe/biodatageeks/spark-py:v2.4.3-edugen-0.1.7-g5a6ab7a"
   PYTHON_MINOR: "3.6.9"
   SCALA_VERSION: 2.11.12
   JUPYTER_KERNEL_NAME: edugen
@@ -223,6 +223,13 @@ buildPublishspark24Edugen:
   <<: *buildPublish
   except: [ main ]
 
+publishGCRspark24Edugen:
+  stage: publishGCR
+  variables:
+    <<: *spark24edugenImageVars
+  <<: *publishGCR
+  except: [ main ]
+
 buildPublishHub:
   stage: buildPublish
   variables:
@@ -310,5 +317,24 @@ publishGCRSparkPy3:
     - cd spark-executor
     - docker tag $NAMESPACE_IMAGE_NAME:v3.0.1-${JUPYTER_KERNEL_NAME}-$VERSION gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v3.0.1-${JUPYTER_KERNEL_NAME}-$VERSION
     - docker push gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v3.0.1-${JUPYTER_KERNEL_NAME}-$VERSION
+  tags: [ docker ]
+  except: [ main ]
+
+
+publishGCRspark24:
+  stage: publishGCR
+  variables:
+    NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
+    JUPYTER_KERNEL_NAME: edugen
+  image:
+    name: google/cloud-sdk:$CLOUD_SDK_VERSION
+  before_script:
+    - source $VERSION_FILE
+    - gcloud auth activate-service-account $GCR_SA --key-file=$GCR_SA_KEY
+    - gcloud auth configure-docker
+  script:
+    - cd spark-executor
+    - docker tag $NAMESPACE_IMAGE_NAME:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
+    - docker push gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
   tags: [ docker ]
   except: [ main ]

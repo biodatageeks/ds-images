@@ -15,7 +15,7 @@ gatk HaplotypeCallerSpark \
   --conf spark.hadoop.fs.gs.project.id=$PROJECT_ID \
   --conf spark.hadoop.fs.gs.impl=com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem \
   --conf spark.hadoop.fs.AbstractFileSystem.gs.impl=com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS \
-  --conf spark.kubernetes.container.image=biodatageeks/spark-py:v2.4.3-edugen-0.1.7-gatk \
+  --conf spark.kubernetes.container.image=gcr.io/studiapodyplomowe/biodatageeks/spark-py:v2.4.3-edugen-0.1.7-gatk \
   --conf spark.kubernetes.authenticate.driver.serviceAccountName=$SERVICE_ACCOUNT \
   --conf spark.kubernetes.authenticate.serviceAccountName=$SERVICE_ACCOUNT \
   --conf spark.kubernetes.executor.podNamePrefix=gatk-exec-$USER \
