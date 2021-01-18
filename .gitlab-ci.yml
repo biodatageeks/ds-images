@@ -28,12 +28,20 @@ variables:
   BIG_DATA_GENOMICS_ENABLED: "false"
   GLOW_VERSION: "io.projectglow:glow-spark2_2.11:0.6.0"
   GLOW_PY_VERSION: 0.6.0
-  SEQUILA_VERSION: "org.biodatageeks:sequila_2.11:0.5.17"
+  SEQUILA_VERSION: "org.biodatageeks:sequila_2.11:0.5.20"
   PYSEQUILA_VERSION: 0.1.8
+  SEQTENDER_VERSION: "org.biodatageeks:seqtender_2.11:0.3.7"
+  PYSEQTENDER_VERSION: 0.1.1
   LAB_DOMAIN: lab.biodatageeks.org
   GCR_SA: container-admin@studiapodyplomowe.iam.gserviceaccount.com
   GCR_SA_KEY: "/root/gcr/sa.json"
   CLOUD_SDK_VERSION: 321.0.0
+  KUBECTL_VERSION: 1.20.0
+  GCS_NIO_VERSION: 0.120.0-alpha
+  GCS_CONNECTOR_VERSION: hadoop2-1.9.17
+  VEP_VERSION: "102.0"
+  SPARK_PVC_NAME: pvc-shared-pipeline
+
 
 
 
@@ -80,11 +88,11 @@ variables:
 
 .spark24edugenImageVars: &spark24edugenImageVars
   SPARK_VERSION: "2.4.3"
-  SPARK_IMAGE: "biodatageeks/spark-py:v2.4.3-3.6.9"
+  SPARK_IMAGE: "gcr.io/studiapodyplomowe/biodatageeks/spark-py:v2.4.3-edugen-0.1.7-g5a6ab7a"
   PYTHON_MINOR: "3.6.9"
   SCALA_VERSION: 2.11.12
   JUPYTER_KERNEL_NAME: edugen
-  MLFLOW_ENABLED: "false"
+  MLFLOW_ENABLED: "true"
   AUTO_BUCKET_ENABLED: "false"
   AIRFLOW_ENABLED: "true"
   BIG_DATA_GENOMICS_ENABLED: "true"
@@ -153,7 +161,14 @@ version-tag:
       --build-arg GLOW_VERSION=$GLOW_VERSION
       --build-arg SEQUILA_VERSION=$SEQUILA_VERSION
       --build-arg PYSEQUILA_VERSION=$PYSEQUILA_VERSION
+      --build-arg SEQTENDER_VERSION=$SEQTENDER_VERSION
+      --build-arg PYSEQTENDER_VERSION=$PYSEQTENDER_VERSION
       --build-arg LAB_DOMAIN=$LAB_DOMAIN
+      --build-arg KUBECTL_VERSION=$KUBECTL_VERSION
+      --build-arg GCS_NIO_VERSION=$GCS_NIO_VERSION
+      --build-arg GCS_CONNECTOR_VERSION=$GCS_CONNECTOR_VERSION
+      --build-arg VEP_VERSION=$VEP_VERSION
+      --build-arg SPARK_PVC_NAME=$SPARK_PVC_NAME
       -t $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
@@ -208,6 +223,13 @@ buildPublishspark24Edugen:
   <<: *buildPublish
   except: [ main ]
 
+publishGCRspark24Edugen:
+  stage: publishGCR
+  variables:
+    <<: *spark24edugenImageVars
+  <<: *publishGCR
+  except: [ main ]
+
 buildPublishHub:
   stage: buildPublish
   variables:
@@ -232,6 +254,7 @@ buildPublishSparkPy3:
   stage: buildPublish
   variables:
     NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
+    JUPYTER_KERNEL_NAME: datascience
   image:
     name: docker:$DOCKER_VERSION
   before_script:
@@ -243,16 +266,47 @@ buildPublishSparkPy3:
       --pull
       --build-arg BASE_IMAGE=$SPARK_BASE_IMAGE
       --build-arg MLFLOW_VERSION=$MLFLOW_VERSION
-      -t $NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
+      --build-arg JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
+      --build-arg GLOW_PY_VERSION=$GLOW_PY_VERSION
+      -t $NAMESPACE_IMAGE_NAME:v3.0.1-${JUPYTER_KERNEL_NAME}-$VERSION
       .
-    - docker push $NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
+    - docker push $NAMESPACE_IMAGE_NAME:v3.0.1-${JUPYTER_KERNEL_NAME}-$VERSION
   tags: [ docker ]
   except: [ main ]
+
+
+buildPublishSparkPy24:
+  stage: buildPublish
+  variables:
+    NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
+    SPARK_BASE_IMAGE: biodatageeks/spark-py:v2.4.3-3.6.9
+    JUPYTER_KERNEL_NAME: edugen
+  image:
+    name: docker:$DOCKER_VERSION
+  before_script:
+    - source $VERSION_FILE
+    - docker login -u $DOCKER_USER -p $DOCKER_PASSWD docker.io
+  script:
+    - cd spark-executor
+    - docker build
+      --pull
+      --build-arg BASE_IMAGE=$SPARK_BASE_IMAGE
+      --build-arg MLFLOW_VERSION=$MLFLOW_VERSION
+      --build-arg JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
+      --build-arg GLOW_PY_VERSION=$GLOW_PY_VERSION
+      --build-arg VEP_VERSION=$VEP_VERSION
+      -t ${NAMESPACE_IMAGE_NAME}:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
+      .
+    - docker push ${NAMESPACE_IMAGE_NAME}:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
+  tags: [ docker ]
+  except: [ main ]
+
 
 publishGCRSparkPy3:
   stage: publishGCR
   variables:
     NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
+    JUPYTER_KERNEL_NAME: datascience
   image:
     name: google/cloud-sdk:$CLOUD_SDK_VERSION
   before_script:
@@ -261,7 +315,26 @@ publishGCRSparkPy3:
     - gcloud auth configure-docker
   script:
     - cd spark-executor
-    - docker tag $NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
-    - docker push gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v3.0.1-ds-$VERSION
+    - docker tag $NAMESPACE_IMAGE_NAME:v3.0.1-${JUPYTER_KERNEL_NAME}-$VERSION gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v3.0.1-${JUPYTER_KERNEL_NAME}-$VERSION
+    - docker push gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v3.0.1-${JUPYTER_KERNEL_NAME}-$VERSION
+  tags: [ docker ]
+  except: [ main ]
+
+
+publishGCRspark24:
+  stage: publishGCR
+  variables:
+    NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
+    JUPYTER_KERNEL_NAME: edugen
+  image:
+    name: google/cloud-sdk:$CLOUD_SDK_VERSION
+  before_script:
+    - source $VERSION_FILE
+    - gcloud auth activate-service-account $GCR_SA --key-file=$GCR_SA_KEY
+    - gcloud auth configure-docker
+  script:
+    - cd spark-executor
+    - docker tag $NAMESPACE_IMAGE_NAME:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
+    - docker push gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
   tags: [ docker ]
   except: [ main ]

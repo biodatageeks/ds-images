@@ -10,7 +10,7 @@ BIODATAGEEKS_REPOS=${BIODATAGEEKS_REPOS:-"https://oss.sonatype.org/content/repos
 #save GCS key
 : "${DS_LAB_GCS_KEY:?GCS key is missing!}"
 
-SECRETS_MOUNT_DIR=/tmp/secrets
+export SECRETS_MOUNT_DIR=/tmp/secrets
 mkdir -p $SECRETS_MOUNT_DIR && echo $DS_LAB_GCS_KEY > $SECRETS_MOUNT_DIR/$SERVICE_ACCOUNT.json
 export GOOGLE_APPLICATION_CREDENTIALS=$SECRETS_MOUNT_DIR/$SERVICE_ACCOUNT.json
 export PROJECT_ID=$(cat $GOOGLE_APPLICATION_CREDENTIALS | jq '.project_id' | sed 's/"//g')
@@ -19,7 +19,7 @@ envsubst < /tmp/.boto_template > $HOME/.boto
 
 ###Packages
 if [ $BIG_DATA_GENOMICS_ENABLED == "true" ]; then
-  SPARK_PACKAGES="--packages ${SEQUILA_VERSION},${GLOW_VERSION}"
+  SPARK_PACKAGES="--packages ${SEQUILA_VERSION},${GLOW_VERSION},${SEQTENDER_VERSION}"
 fi
 
 if [ $MLFLOW_ENABLED == "true" ]; then
@@ -29,7 +29,7 @@ fi
 export PYSPARK_PYTHON=python3
 
 export PYSPARK_SUBMIT_ARGS="--repositories ${BIODATAGEEKS_REPOS} \
-  --jars /tmp/gcs-connector-hadoop2-latest.jar,/tmp/google-cloud-nio-0.120.0-alpha-shaded.jar \
+  --jars /tmp/gcs-connector-${GCS_CONNECTOR_VERSION}-shaded.jar,/tmp/google-cloud-nio-${GCS_NIO_VERSION}-shaded.jar \
   --conf spark.hadoop.google.cloud.auth.service.account.enable=true \
   --conf spark.hadoop.google.cloud.auth.service.account.json.keyfile=$GOOGLE_APPLICATION_CREDENTIALS \
   --conf spark.kubernetes.driverEnv.GCS_PROJECT_ID=$PROJECT_ID \
@@ -48,6 +48,9 @@ export PYSPARK_SUBMIT_ARGS="--repositories ${BIODATAGEEKS_REPOS} \
   --conf spark.kubernetes.executor.podNamePrefix=pyspark-exec-$JUPYTERHUB_USER \
   --conf spark.kubernetes.executor.label.spark-owner=$JUPYTERHUB_USER \
   --conf spark.kubernetes.executor.request.cores=0.4 \
+  --conf spark.kubernetes.executor.volumes.persistentVolumeClaim.${SPARK_PVC_NAME}.options.claimName=${SPARK_PVC_NAME} \
+  --conf spark.kubernetes.executor.volumes.persistentVolumeClaim.${SPARK_PVC_NAME}.mount.path=/mnt/data \
+  --conf spark.kubernetes.executor.volumes.persistentVolumeClaim.${SPARK_PVC_NAME}.mount.readOnly=true \
   --conf spark.driver.port=29010 \
   --conf spark.blockManager.port=29011 \
   --conf spark.kubernetes.namespace=default \

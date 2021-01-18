@@ -93,8 +93,8 @@ python -c "$PYTHON_SCRIPT"
 export AIRFLOW__WEBSERVER__BASE_URL="https://${LAB_DOMAIN}/user/${USER}/airflow"
 export AIRFLOW__WEBSERVER__ENABLE_PROXY_FIX="True"
 #load examples
-export AIRFLOW__CORE__LOAD_EXAMPLES="True"
-
+export AIRFLOW__CORE__LOAD_EXAMPLES="False"
+rm -rf $HOME/airflow/airflow-webserver.pid
 airflow webserver --port $AIRFLOW_PORT &
 airflow scheduler &
 
