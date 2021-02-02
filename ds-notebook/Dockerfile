@@ -36,6 +36,7 @@ ARG KUBECTL_VERSION
 ARG GCS_CONNECTOR_VERSION
 ARG VEP_VERSION
 ARG SPARK_PVC_NAME
+ARG SEQUILA_DEV_ENABLED
 
 ENV MLFLOW_ENABLED=$MLFLOW_ENABLED
 ENV AUTO_BUCKET_ENABLED=$AUTO_BUCKET_ENABLED
@@ -167,7 +168,7 @@ USER $NB_USER
 
 RUN source /opt/conda/etc/profile.d/conda.sh && \
     conda create python=$PYTHON_MINOR -p $HOME/venv/$JUPYTER_KERNEL_NAME -y && \
-    conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
+        conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
     pip install -U ipykernel==5.3.4 \
                     pandas==1.1.4 \
                     pyspark==$SPARK_VERSION \
@@ -201,6 +202,9 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
         pip install -U pysequila==$PYSEQUILA_VERSION \
                        pyseqtender==$PYSEQTENDER_VERSION \
                        glow.py==$GLOW_PY_VERSION; \
+    fi && \
+    if [ $SEQUILA_DEV_ENABLED == "true" ]; then \
+            pip install -U pysequila==$PYSEQUILA_VERSION; \
     fi && \
     conda deactivate
 

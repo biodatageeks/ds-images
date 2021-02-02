@@ -41,6 +41,7 @@ variables:
   GCS_CONNECTOR_VERSION: hadoop2-1.9.17
   VEP_VERSION: "102.0"
   SPARK_PVC_NAME: pvc-shared-pipeline
+  SEQUILA_DEV_ENABLED: "false"
 
 
 
@@ -70,6 +71,22 @@ variables:
   AIRFLOW_ENABLED: "false"
   BIG_DATA_GENOMICS_ENABLED: "true"
   NOTEBOOKS_REPO: https://github.com/biodatageeks/notebooks
+
+.spark30ImageVars: &spark30ImageVars
+  SPARK_VERSION: "3.0.1"
+  SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
+  PYTHON_MINOR: "3.7"
+  SCALA_VERSION: 2.12.10
+  SEQUILA_VERSION: "org.biodatageeks:sequila_2.12:0.6.0"
+  PYSEQUILA_VERSION: 0.1.8
+  JUPYTER_KERNEL_NAME: pysequila
+  MLFLOW_ENABLED: "false"
+  AUTO_BUCKET_ENABLED: "false"
+  AIRFLOW_ENABLED: "false"
+  BIG_DATA_GENOMICS_ENABLED: "false"
+  SEQUILA_DEV_ENABLED: "true"
+  NOTEBOOKS_REPO: https://github.com/biodatageeks/notebooks
+
 
 .edugenImageVars: &edugenImageVars
   JDK_VERSION: 11.0.9.hs-adpt
@@ -169,6 +186,7 @@ version-tag:
       --build-arg GCS_CONNECTOR_VERSION=$GCS_CONNECTOR_VERSION
       --build-arg VEP_VERSION=$VEP_VERSION
       --build-arg SPARK_PVC_NAME=$SPARK_PVC_NAME
+      --build-arg SEQUILA_DEV_ENABLED=$SEQUILA_DEV_ENABLED
       -t $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
@@ -208,6 +226,14 @@ buildPublish24:
     <<: *spark24ImageVars
   <<: *buildPublish
   except: [ main ]
+
+buildPublish30:
+  stage: buildPublish
+  variables:
+    <<: *spark30ImageVars
+  <<: *buildPublish
+  except: [ main ]
+
 
 buildPublishEdugen:
   stage: buildPublish
