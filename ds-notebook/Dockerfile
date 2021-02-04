@@ -203,9 +203,6 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
                        pyseqtender==$PYSEQTENDER_VERSION \
                        glow.py==$GLOW_PY_VERSION; \
     fi && \
-    if [ $SEQUILA_DEV_ENABLED == "true" ]; then \
-            pip install -U pysequila==$PYSEQUILA_VERSION; \
-    fi && \
     conda deactivate
 
 RUN cd /tmp && wget https://repo1.maven.org/maven2/com/google/cloud/bigdataoss/gcs-connector/${GCS_CONNECTOR_VERSION}/gcs-connector-${GCS_CONNECTOR_VERSION}-shaded.jar && \
