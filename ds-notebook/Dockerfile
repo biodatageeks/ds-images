@@ -212,4 +212,8 @@ RUN cd /tmp && wget https://repo1.maven.org/maven2/com/google/cloud/bigdataoss/g
 ENV AIRFLOW_HOME=/home/$USER_NAME/airflow
 ENV VEP_VERSION=$VEP_VERSION
 ENV SPARK_PVC_NAME=$SPARK_PVC_NAME
+
+#spark pod template
+ADD resources/spark/exec_pod_template.template /tmp/
+
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
