@@ -41,6 +41,7 @@ variables:
   GCS_CONNECTOR_VERSION: hadoop2-1.9.17
   VEP_VERSION: "102.0"
   SPARK_PVC_NAME: pvc-shared-pipeline
+  SEQUILA_DEV_ENABLED: "false"
 
 
 
@@ -57,19 +58,21 @@ variables:
   BIG_DATA_GENOMICS_ENABLED: "false"
   NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
 
-
-
-.spark24ImageVars: &spark24ImageVars
-  SPARK_VERSION: "2.4.3"
-  SPARK_IMAGE: "biodatageeks/spark-py:v2.4.3-3.6.9"
-  PYTHON_MINOR: "3.6.9"
-  SCALA_VERSION: 2.11.12
+.spark30ImageVars: &spark30ImageVars
+  SPARK_VERSION: "3.0.1"
+  SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
+  PYTHON_MINOR: "3.7"
+  SCALA_VERSION: 2.12.10
+  SEQUILA_VERSION: "org.biodatageeks:sequila_2.12:0.6.0"
+  PYSEQUILA_VERSION: 0.1.8
   JUPYTER_KERNEL_NAME: pysequila
-  MLFLOW_ENABLED: "true"
-  AUTO_BUCKET_ENABLED: "true"
+  MLFLOW_ENABLED: "false"
+  AUTO_BUCKET_ENABLED: "false"
   AIRFLOW_ENABLED: "false"
-  BIG_DATA_GENOMICS_ENABLED: "true"
+  BIG_DATA_GENOMICS_ENABLED: "false"
+  SEQUILA_DEV_ENABLED: "true"
   NOTEBOOKS_REPO: https://github.com/biodatageeks/notebooks
+
 
 .edugenImageVars: &edugenImageVars
   JDK_VERSION: 11.0.9.hs-adpt
@@ -169,6 +172,7 @@ version-tag:
       --build-arg GCS_CONNECTOR_VERSION=$GCS_CONNECTOR_VERSION
       --build-arg VEP_VERSION=$VEP_VERSION
       --build-arg SPARK_PVC_NAME=$SPARK_PVC_NAME
+      --build-arg SEQUILA_DEV_ENABLED=$SEQUILA_DEV_ENABLED
       -t $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
@@ -202,33 +206,36 @@ publishGCRDefault:
   <<: *publishGCR
   except: [ main ]
 
-buildPublish24:
+
+buildPublish30:
   stage: buildPublish
   variables:
-    <<: *spark24ImageVars
+    <<: *spark30ImageVars
   <<: *buildPublish
   except: [ main ]
 
-buildPublishEdugen:
-  stage: buildPublish
-  variables:
-    <<: *edugenImageVars
-  <<: *buildPublish
-  except: [ main ]
+###Builds failing and for now not supported - https://github.com/biodatageeks/ds-images/issues/24
+#buildPublishEdugen:
+#  stage: buildPublish
+#  variables:
+#    <<: *edugenImageVars
+#  <<: *buildPublish
+#  except: [ main ]
 
-buildPublishspark24Edugen:
-  stage: buildPublish
-  variables:
-    <<: *spark24edugenImageVars
-  <<: *buildPublish
-  except: [ main ]
+#buildPublishspark24Edugen:
+#  stage: buildPublish
+#  variables:
+#    <<: *spark24edugenImageVars
+#  <<: *buildPublish
+#  except: [ main ]
 
-publishGCRspark24Edugen:
-  stage: publishGCR
-  variables:
-    <<: *spark24edugenImageVars
-  <<: *publishGCR
-  except: [ main ]
+#publishGCRspark24Edugen:
+#  stage: publishGCR
+#  variables:
+#    <<: *spark24edugenImageVars
+#  <<: *publishGCR
+#  except: [ main ]
+#### edugen
 
 buildPublishHub:
   stage: buildPublish
@@ -275,31 +282,33 @@ buildPublishSparkPy3:
   except: [ main ]
 
 
-buildPublishSparkPy24:
-  stage: buildPublish
-  variables:
-    NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
-    SPARK_BASE_IMAGE: biodatageeks/spark-py:v2.4.3-3.6.9
-    JUPYTER_KERNEL_NAME: edugen
-  image:
-    name: docker:$DOCKER_VERSION
-  before_script:
-    - source $VERSION_FILE
-    - docker login -u $DOCKER_USER -p $DOCKER_PASSWD docker.io
-  script:
-    - cd spark-executor
-    - docker build
-      --pull
-      --build-arg BASE_IMAGE=$SPARK_BASE_IMAGE
-      --build-arg MLFLOW_VERSION=$MLFLOW_VERSION
-      --build-arg JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
-      --build-arg GLOW_PY_VERSION=$GLOW_PY_VERSION
-      --build-arg VEP_VERSION=$VEP_VERSION
-      -t ${NAMESPACE_IMAGE_NAME}:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
-      .
-    - docker push ${NAMESPACE_IMAGE_NAME}:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
-  tags: [ docker ]
-  except: [ main ]
+
+### https://github.com/biodatageeks/ds-images/issues/24
+#buildPublishSparkPy24:
+#  stage: buildPublish
+#  variables:
+#    NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
+#    SPARK_BASE_IMAGE: biodatageeks/spark-py:v2.4.3-3.6.9
+#    JUPYTER_KERNEL_NAME: edugen
+#  image:
+#    name: docker:$DOCKER_VERSION
+#  before_script:
+#    - source $VERSION_FILE
+#    - docker login -u $DOCKER_USER -p $DOCKER_PASSWD docker.io
+#  script:
+#    - cd spark-executor
+#    - docker build
+#      --pull
+#      --build-arg BASE_IMAGE=$SPARK_BASE_IMAGE
+#      --build-arg MLFLOW_VERSION=$MLFLOW_VERSION
+#      --build-arg JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
+#      --build-arg GLOW_PY_VERSION=$GLOW_PY_VERSION
+#      --build-arg VEP_VERSION=$VEP_VERSION
+#      -t ${NAMESPACE_IMAGE_NAME}:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
+#      .
+#    - docker push ${NAMESPACE_IMAGE_NAME}:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
+#  tags: [ docker ]
+#  except: [ main ]
 
 
 publishGCRSparkPy3:
@@ -320,21 +329,21 @@ publishGCRSparkPy3:
   tags: [ docker ]
   except: [ main ]
 
-
-publishGCRspark24:
-  stage: publishGCR
-  variables:
-    NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
-    JUPYTER_KERNEL_NAME: edugen
-  image:
-    name: google/cloud-sdk:$CLOUD_SDK_VERSION
-  before_script:
-    - source $VERSION_FILE
-    - gcloud auth activate-service-account $GCR_SA --key-file=$GCR_SA_KEY
-    - gcloud auth configure-docker
-  script:
-    - cd spark-executor
-    - docker tag $NAMESPACE_IMAGE_NAME:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
-    - docker push gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
-  tags: [ docker ]
-  except: [ main ]
+### https://github.com/biodatageeks/ds-images/issues/24
+#publishGCRspark24:
+#  stage: publishGCR
+#  variables:
+#    NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
+#    JUPYTER_KERNEL_NAME: edugen
+#  image:
+#    name: google/cloud-sdk:$CLOUD_SDK_VERSION
+#  before_script:
+#    - source $VERSION_FILE
+#    - gcloud auth activate-service-account $GCR_SA --key-file=$GCR_SA_KEY
+#    - gcloud auth configure-docker
+#  script:
+#    - cd spark-executor
+#    - docker tag $NAMESPACE_IMAGE_NAME:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
+#    - docker push gcr.io/$PROJECT_NAME/$NAMESPACE_IMAGE_NAME:v2.4.3-${JUPYTER_KERNEL_NAME}-$VERSION
+#  tags: [ docker ]
+#  except: [ main ]

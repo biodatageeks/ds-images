@@ -36,6 +36,7 @@ ARG KUBECTL_VERSION
 ARG GCS_CONNECTOR_VERSION
 ARG VEP_VERSION
 ARG SPARK_PVC_NAME
+ARG SEQUILA_DEV_ENABLED
 
 ENV MLFLOW_ENABLED=$MLFLOW_ENABLED
 ENV AUTO_BUCKET_ENABLED=$AUTO_BUCKET_ENABLED
@@ -167,7 +168,7 @@ USER $NB_USER
 
 RUN source /opt/conda/etc/profile.d/conda.sh && \
     conda create python=$PYTHON_MINOR -p $HOME/venv/$JUPYTER_KERNEL_NAME -y && \
-    conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
+        conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
     pip install -U ipykernel==5.3.4 \
                     pandas==1.1.4 \
                     pyspark==$SPARK_VERSION \
@@ -211,4 +212,8 @@ RUN cd /tmp && wget https://repo1.maven.org/maven2/com/google/cloud/bigdataoss/g
 ENV AIRFLOW_HOME=/home/$USER_NAME/airflow
 ENV VEP_VERSION=$VEP_VERSION
 ENV SPARK_PVC_NAME=$SPARK_PVC_NAME
+
+#spark pod template
+ADD resources/spark/exec_pod_template.template /tmp/
+
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

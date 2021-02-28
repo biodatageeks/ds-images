@@ -7,6 +7,8 @@ echo "$@"
 #prepare repos
 BIODATAGEEKS_REPOS=${BIODATAGEEKS_REPOS:-"https://oss.sonatype.org/content/repositories/snapshots/"}
 
+#PYSEQUILA
+PYSEQUILA_VERSION=${PYSEQUILA_VERSION:-"0.2.0"}
 #save GCS key
 : "${DS_LAB_GCS_KEY:?GCS key is missing!}"
 
@@ -24,6 +26,13 @@ fi
 
 if [ $MLFLOW_ENABLED == "true" ]; then
   export MLFLOW_TRACKING_URI=http://localhost:5000
+fi
+
+if [ $SEQUILA_DEV_ENABLED == "true" ]; then
+    source /opt/conda/etc/profile.d/conda.sh
+    conda activate $TMP_HOME/venv/$JUPYTER_KERNEL_NAME
+    pip install -U pysequila==$PYSEQUILA_VERSION
+    conda deactivate
 fi
 
 export PYSPARK_PYTHON=python3
@@ -51,6 +60,7 @@ export PYSPARK_SUBMIT_ARGS="--repositories ${BIODATAGEEKS_REPOS} \
   --conf spark.kubernetes.executor.volumes.persistentVolumeClaim.${SPARK_PVC_NAME}.options.claimName=${SPARK_PVC_NAME} \
   --conf spark.kubernetes.executor.volumes.persistentVolumeClaim.${SPARK_PVC_NAME}.mount.path=/mnt/data \
   --conf spark.kubernetes.executor.volumes.persistentVolumeClaim.${SPARK_PVC_NAME}.mount.readOnly=true \
+  --conf spark.kubernetes.executor.podTemplateFile=/tmp/exec_pod_template.template
   --conf spark.driver.port=29010 \
   --conf spark.blockManager.port=29011 \
   --conf spark.kubernetes.namespace=default \
