@@ -58,20 +58,6 @@ variables:
   BIG_DATA_GENOMICS_ENABLED: "false"
   NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
 
-
-
-.spark24ImageVars: &spark24ImageVars
-  SPARK_VERSION: "2.4.3"
-  SPARK_IMAGE: "biodatageeks/spark-py:v2.4.3-3.6.9"
-  PYTHON_MINOR: "3.6.9"
-  SCALA_VERSION: 2.11.12
-  JUPYTER_KERNEL_NAME: pysequila
-  MLFLOW_ENABLED: "true"
-  AUTO_BUCKET_ENABLED: "true"
-  AIRFLOW_ENABLED: "false"
-  BIG_DATA_GENOMICS_ENABLED: "true"
-  NOTEBOOKS_REPO: https://github.com/biodatageeks/notebooks
-
 .spark30ImageVars: &spark30ImageVars
   SPARK_VERSION: "3.0.1"
   SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
@@ -220,12 +206,6 @@ publishGCRDefault:
   <<: *publishGCR
   except: [ main ]
 
-buildPublish24:
-  stage: buildPublish
-  variables:
-    <<: *spark24ImageVars
-  <<: *buildPublish
-  except: [ main ]
 
 buildPublish30:
   stage: buildPublish
