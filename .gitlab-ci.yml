@@ -63,8 +63,8 @@ variables:
   SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
   PYTHON_MINOR: "3.7"
   SCALA_VERSION: 2.12.10
-  SEQUILA_VERSION: "org.biodatageeks:sequila_2.12:0.6.0"
-  PYSEQUILA_VERSION: 0.1.8
+  SEQUILA_VERSION: "org.biodatageeks:sequila_2.12:0.6.5"
+  PYSEQUILA_VERSION: 0.2.0
   JUPYTER_KERNEL_NAME: pysequila
   MLFLOW_ENABLED: "false"
   AUTO_BUCKET_ENABLED: "false"
