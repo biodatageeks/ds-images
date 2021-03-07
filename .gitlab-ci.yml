@@ -84,7 +84,7 @@ variables:
   MLFLOW_ENABLED: "false"
   AUTO_BUCKET_ENABLED: "false"
   AIRFLOW_ENABLED: "true"
-  BIG_DATA_GENOMICS_ENABLED: "false"
+  BIG_DATA_GENOMICS_ENABLED: "true"
   GLOW_VERSION: "io.projectglow:glow-spark3_2.12:0.6.0"
   NOTEBOOKS_REPO: https://github.com/IMID/edugen_pub
 
@@ -215,19 +215,19 @@ buildPublish30:
   except: [ main ]
 
 ###Builds failing and for now not supported - https://github.com/biodatageeks/ds-images/issues/24
-#buildPublishEdugen:
-#  stage: buildPublish
-#  variables:
-#    <<: *edugenImageVars
-#  <<: *buildPublish
-#  except: [ main ]
+buildPublishEdugen:
+  stage: buildPublish
+  variables:
+    <<: *edugenImageVars
+  <<: *buildPublish
+  except: [ main ]
 
-#buildPublishspark24Edugen:
-#  stage: buildPublish
-#  variables:
-#    <<: *spark24edugenImageVars
-#  <<: *buildPublish
-#  except: [ main ]
+buildPublishspark24Edugen:
+  stage: buildPublish
+  variables:
+    <<: *spark24edugenImageVars
+  <<: *buildPublish
+  except: [ main ]
 
 #publishGCRspark24Edugen:
 #  stage: publishGCR
