@@ -73,13 +73,15 @@ variables:
   SEQUILA_DEV_ENABLED: "true"
   NOTEBOOKS_REPO: https://github.com/biodatageeks/notebooks
 
-
+### image for PW students
 .edugenImageVars: &edugenImageVars
   JDK_VERSION: 11.0.9.hs-adpt
   SPARK_VERSION: "3.0.1"
   SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
   PYTHON_MINOR: "3.7"
   SCALA_VERSION: 2.12.10
+  SEQUILA_VERSION: "org.biodatageeks:sequila_2.12:0.6.5"
+  PYSEQUILA_VERSION: 0.2.0
   JUPYTER_KERNEL_NAME: edugen
   MLFLOW_ENABLED: "false"
   AUTO_BUCKET_ENABLED: "false"
