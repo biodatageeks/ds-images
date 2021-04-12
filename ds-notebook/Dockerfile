@@ -9,6 +9,7 @@ ARG SCALA_VERSION=2.12.10
 ARG SBT_VERSION=1.3.10
 ARG SPARK_VERSION
 ARG HADOOP_VERSION=2.7
+ARG PIP_VERSION=21.0.1
 ARG PY4J_VERSION="0.10.9"
 ARG NOTEBOOKS_REPO
 ARG JUPYTER_KERNEL_NAME
@@ -37,6 +38,9 @@ ARG GCS_CONNECTOR_VERSION
 ARG VEP_VERSION
 ARG SPARK_PVC_NAME
 ARG SEQUILA_DEV_ENABLED
+ARG VS_CODE_ENABLED
+ARG KEDRO_ENABLED
+ARG KEDRO_VERSION
 
 ENV MLFLOW_ENABLED=$MLFLOW_ENABLED
 ENV AUTO_BUCKET_ENABLED=$AUTO_BUCKET_ENABLED
@@ -46,6 +50,8 @@ ENV SEQUILA_DEV_ENABLED=$SEQUILA_DEV_ENABLED
 ENV GLOW_VERSION=$GLOW_VERSION
 ENV SEQUILA_VERSION=$SEQUILA_VERSION
 ENV SEQTENDER_VERSION=$SEQTENDER_VERSION
+ENV VS_CODE_ENABLED=$VS_CODE_ENABLED
+ENV KEDRO_ENABLED=$KEDRO_ENABLED
 
 ENV NOTEBOOKS_REPO=$NOTEBOOKS_REPO
 ENV JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
@@ -176,7 +182,7 @@ USER $NB_USER
 
 RUN source /opt/conda/etc/profile.d/conda.sh && \
     conda create python=$PYTHON_MINOR -p $HOME/venv/$JUPYTER_KERNEL_NAME -y && \
-        conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
+    conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
     pip install -U ipykernel==5.3.4 \
                     pandas==1.1.4 \
                     pyspark==$SPARK_VERSION \
@@ -191,19 +197,33 @@ RUN source /opt/conda/etc/profile.d/conda.sh && \
 
 RUN  source /opt/conda/etc/profile.d/conda.sh && \
      conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
+     if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
+        pip install -U pip==$PIP_VERSION && \
+        pip install -U pysam \
+                       multiqc \
+                       biothings_client \
+                       igv-jupyterlab==$IGV_JUPYTER_VERSION; \
+    fi && \
     if [ $MLFLOW_ENABLED == "true" ]; then \
+        pip install -U pip==$PIP_VERSION && \
         pip install -U mlflow==$MLFLOW_VERSION \
                        PyArrow==0.15.1; \
     fi && \
     if [ $AIRFLOW_ENABLED == "true" ]; then \
-        pip install -U pip==20.2.4 && \
+        pip install -U pip==$PIP_VERSION && \
         pip install -U apache-airflow==$AIRFLOW_VERSION \
                        apache-airflow-providers-cncf-kubernetes; \
     fi && \
     if [ $BIG_DATA_GENOMICS_ENABLED == "true" ]; then \
+        pip install -U pip==$PIP_VERSION && \
         pip install -U pysequila==$PYSEQUILA_VERSION \
                        pyseqtender==$PYSEQTENDER_VERSION \
                        glow.py==$GLOW_PY_VERSION; \
+    fi && \
+    if [ $KEDRO_ENABLED == "true" ]; then \
+        pip install -U pip==$PIP_VERSION && \
+        pip install -U kedro==$KEDRO_VERSION \
+                       kedro-viz kedro-airflow==0.4.1 kedro-mlflow==0.7.1; \
     fi && \
     conda deactivate
 

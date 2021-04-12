@@ -42,6 +42,9 @@ variables:
   VEP_VERSION: "101.0"
   SPARK_PVC_NAME: pvc-shared-pipeline
   SEQUILA_DEV_ENABLED: "false"
+  VS_CODE_ENABLED: "false"
+  KEDRO_ENABLED: "false"
+  KEDRO_VERSION: 0.17.2
 
 
 
@@ -56,6 +59,8 @@ variables:
   AUTO_BUCKET_ENABLED: "true"
   AIRFLOW_ENABLED: "false"
   BIG_DATA_GENOMICS_ENABLED: "false"
+  VS_CODE_ENABLED: "true"
+  KEDRO_ENABLED: "true"
   NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
 
 ### image for sequila devel
@@ -179,6 +184,9 @@ version-tag:
       --build-arg VEP_VERSION=$VEP_VERSION
       --build-arg SPARK_PVC_NAME=$SPARK_PVC_NAME
       --build-arg SEQUILA_DEV_ENABLED=$SEQUILA_DEV_ENABLED
+      --build-arg VS_CODE_ENABLED=$VS_CODE_ENABLED
+      --build-arg KEDRO_ENABLED=$KEDRO_ENABLED
+      --build-arg KEDRO_VERSION=$KEDRO_VERSION
       -t $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
