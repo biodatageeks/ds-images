@@ -57,7 +57,7 @@ variables:
   JUPYTER_KERNEL_NAME: datascience
   MLFLOW_ENABLED: "true"
   AUTO_BUCKET_ENABLED: "true"
-  AIRFLOW_ENABLED: "false"
+  AIRFLOW_ENABLED: "true"
   BIG_DATA_GENOMICS_ENABLED: "false"
   VS_CODE_ENABLED: "true"
   KEDRO_ENABLED: "true"
