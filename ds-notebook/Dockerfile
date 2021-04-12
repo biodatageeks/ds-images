@@ -217,7 +217,7 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
     if [ $BIG_DATA_GENOMICS_ENABLED == "true" ]; then \
         pip install -U pip==$PIP_VERSION && \
         pip install -U pysequila==$PYSEQUILA_VERSION \
-                       pyseqtender==$PYSEQTENDER_VERSION \
+#                       pyseqtender==$PYSEQTENDER_VERSION \ /FIXME:temporary disabling pyseqtender does not support spark 3.0.1
                        glow.py==$GLOW_PY_VERSION; \
     fi && \
     if [ $KEDRO_ENABLED == "true" ]; then \
