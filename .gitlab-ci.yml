@@ -58,6 +58,7 @@ variables:
   BIG_DATA_GENOMICS_ENABLED: "false"
   NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
 
+### image for sequila devel
 .spark30ImageVars: &spark30ImageVars
   SPARK_VERSION: "3.0.1"
   SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
@@ -91,6 +92,7 @@ variables:
   NOTEBOOKS_REPO: https://github.com/IMID/edugen_pub
 
 
+###deprecated to remove
 .spark24edugenImageVars: &spark24edugenImageVars
   SPARK_VERSION: "2.4.3"
   SPARK_IMAGE: "gcr.io/studiapodyplomowe/biodatageeks/spark-py:v2.4.3-edugen-0.1.7-g5a6ab7a"
