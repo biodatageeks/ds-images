@@ -225,6 +225,7 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
         pip install -U kedro==$KEDRO_VERSION \
                        kedro-viz kedro-airflow==0.4.1 kedro-mlflow==0.7.1; \
     fi && \
+    pip install -U "sqlalchemy<1.4.0" && \
     conda deactivate
 
 RUN cd /tmp && wget https://repo1.maven.org/maven2/com/google/cloud/bigdataoss/gcs-connector/${GCS_CONNECTOR_VERSION}/gcs-connector-${GCS_CONNECTOR_VERSION}-shaded.jar && \
