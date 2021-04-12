@@ -58,6 +58,7 @@ variables:
   BIG_DATA_GENOMICS_ENABLED: "false"
   NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
 
+### image for sequila devel
 .spark30ImageVars: &spark30ImageVars
   SPARK_VERSION: "3.0.1"
   SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
@@ -73,22 +74,25 @@ variables:
   SEQUILA_DEV_ENABLED: "true"
   NOTEBOOKS_REPO: https://github.com/biodatageeks/notebooks
 
-
+### image for PW students
 .edugenImageVars: &edugenImageVars
   JDK_VERSION: 11.0.9.hs-adpt
   SPARK_VERSION: "3.0.1"
   SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
   PYTHON_MINOR: "3.7"
   SCALA_VERSION: 2.12.10
+  SEQUILA_VERSION: "org.biodatageeks:sequila_2.12:0.6.5"
+  PYSEQUILA_VERSION: 0.2.0
   JUPYTER_KERNEL_NAME: edugen
   MLFLOW_ENABLED: "false"
   AUTO_BUCKET_ENABLED: "false"
   AIRFLOW_ENABLED: "true"
-  BIG_DATA_GENOMICS_ENABLED: "false"
+  BIG_DATA_GENOMICS_ENABLED: "true"
   GLOW_VERSION: "io.projectglow:glow-spark3_2.12:0.6.0"
   NOTEBOOKS_REPO: https://github.com/IMID/edugen_pub
 
 
+###deprecated to remove
 .spark24edugenImageVars: &spark24edugenImageVars
   SPARK_VERSION: "2.4.3"
   SPARK_IMAGE: "gcr.io/studiapodyplomowe/biodatageeks/spark-py:v2.4.3-edugen-0.1.7-g5a6ab7a"
@@ -215,19 +219,19 @@ buildPublish30:
   except: [ main ]
 
 ###Builds failing and for now not supported - https://github.com/biodatageeks/ds-images/issues/24
-#buildPublishEdugen:
-#  stage: buildPublish
-#  variables:
-#    <<: *edugenImageVars
-#  <<: *buildPublish
-#  except: [ main ]
+buildPublishEdugen:
+  stage: buildPublish
+  variables:
+    <<: *edugenImageVars
+  <<: *buildPublish
+  except: [ main ]
 
-#buildPublishspark24Edugen:
-#  stage: buildPublish
-#  variables:
-#    <<: *spark24edugenImageVars
-#  <<: *buildPublish
-#  except: [ main ]
+buildPublishspark24Edugen:
+  stage: buildPublish
+  variables:
+    <<: *spark24edugenImageVars
+  <<: *buildPublish
+  except: [ main ]
 
 #publishGCRspark24Edugen:
 #  stage: publishGCR
