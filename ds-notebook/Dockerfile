@@ -148,6 +148,8 @@ RUN cd /tmp && \
     mv ./kubectl /usr/local/bin/kubectl
 
 RUN mkdir -p /mnt/data && chown -R $NB_USER /mnt/data
+ADD resources/edugen/bin/* /usr/local/bin/
+RUN apt-get install python3-opencv -y
 
 RUN apt-get update && apt-get -qq -y install lsb-release gnupg && \
     export GCSFUSE_REPO=gcsfuse-`lsb_release -c -s` && \
@@ -217,6 +219,7 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
     if [ $BIG_DATA_GENOMICS_ENABLED == "true" ]; then \
         pip install -U pip==$PIP_VERSION && \
         pip install -U pysequila==$PYSEQUILA_VERSION \
+                       opencv-python==4.5.1.48 \
 #                       pyseqtender==$PYSEQTENDER_VERSION \ /FIXME:temporary disabling pyseqtender does not support spark 3.0.1
                        glow.py==$GLOW_PY_VERSION; \
     fi && \
