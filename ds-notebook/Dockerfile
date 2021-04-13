@@ -240,4 +240,8 @@ ENV SPARK_PVC_NAME=$SPARK_PVC_NAME
 #spark pod template
 ADD resources/spark/exec_pod_template.template /tmp/
 
+
+#install k9s
+RUN curl -sS https://webinstall.dev/k9s | bash
+ENV PATH=$PATH:/tmp/jovyan/.local/bin
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
