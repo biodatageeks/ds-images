@@ -129,7 +129,7 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
         pip install -U igv-jupyterlab==$IGV_JUPYTER_VERSION && \
         jupyter labextension install @jupyter-widgets/jupyterlab-manager @epi2melabs/igv-jupyterlab && \
         apt-get update && \
-        apt-get -qq -y install samtools bedtools libhts-dev fastqc bwa tabix bcftools bowtie2 && \
+        apt-get -qq -y install samtools bedtools libhts-dev fastqc bwa tabix bcftools bowtie2 libopenblas-base liblapack3 && \
         cd /opt && \
         wget https://github.com/broadinstitute/gatk/releases/download/$GATK_VERSION/gatk-$GATK_VERSION.zip && \
         unzip gatk-$GATK_VERSION.zip && \
@@ -202,7 +202,8 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
     if [ $BIG_DATA_GENOMICS_ENABLED == "true" ]; then \
         pip install -U pysequila==$PYSEQUILA_VERSION \
                        pyseqtender==$PYSEQTENDER_VERSION \
-                       glow.py==$GLOW_PY_VERSION; \
+                       glow.py==$GLOW_PY_VERSION \
+                       hail; \
     fi && \
     conda deactivate
 
