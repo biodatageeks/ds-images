@@ -4,7 +4,7 @@ FROM $BASE_IMAGE
 
 USER root
 
-ARG JAVA_VERSION=8.0.265.hs-adpt
+ARG JAVA_VERSION=8.0.292.hs-adpt
 ARG SCALA_VERSION=2.12.10
 ARG SBT_VERSION=1.3.10
 ARG SPARK_VERSION
@@ -163,6 +163,13 @@ RUN cd /tmp && \
     mv ./kubectl /usr/local/bin/kubectl
 
 RUN mkdir -p /mnt/data && chown -R $NB_USER /mnt/data
+
+RUN apt-get update && apt-get -qq -y install lsb-release && \
+    export GCSFUSE_REPO=gcsfuse-`lsb_release -c -s` \
+    echo "deb http://packages.cloud.google.com/apt $GCSFUSE_REPO main" | sudo tee /etc/apt/sources.list.d/gcsfuse.list && \
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \
+    apt-get update && apt-get -qq -y install gcsfuse
+
 ADD resources/edugen/bin/* /usr/local/bin/
 USER $NB_USER
 
@@ -208,12 +215,6 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
 
 RUN cd /tmp && wget https://repo1.maven.org/maven2/com/google/cloud/bigdataoss/gcs-connector/${GCS_CONNECTOR_VERSION}/gcs-connector-${GCS_CONNECTOR_VERSION}-shaded.jar && \
     wget https://repo1.maven.org/maven2/com/google/cloud/google-cloud-nio/${GCS_NIO_VERSION}/google-cloud-nio-${GCS_NIO_VERSION}-shaded.jar
-
-RUN apt-get update && apt-get -qq -y install lsb-release && \
-    export GCSFUSE_REPO=gcsfuse-`lsb_release -c -s` \
-    echo "deb http://packages.cloud.google.com/apt $GCSFUSE_REPO main" | sudo tee /etc/apt/sources.list.d/gcsfuse.list && \
-    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \
-    apt-get update && apt-get -qq -y install gcsfuse
 
 #airflow
 ENV AIRFLOW_HOME=/home/$USER_NAME/airflow
