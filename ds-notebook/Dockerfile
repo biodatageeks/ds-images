@@ -148,7 +148,11 @@ RUN apt-get update && apt-get -qq -y install lsb-release gnupg && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \
     apt-get update && apt-get -qq -y install gcsfuse
 
-RUN pip install -U jupyter-resource-usage
+RUN pip install -U
+    jupyter-resource-usage==0.6.0 \
+    kedro==0.17.3 \
+    kedro-viz=3.11.0
+
 
 
 USER $NB_USER
