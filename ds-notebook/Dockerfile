@@ -148,6 +148,8 @@ RUN apt-get update && apt-get -qq -y install lsb-release gnupg && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \
     apt-get update && apt-get -qq -y install gcsfuse
 
+RUN pip install -U jupyter-resource-usage
+
 
 USER $NB_USER
 
