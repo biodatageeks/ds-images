@@ -148,7 +148,10 @@ RUN apt-get update && apt-get -qq -y install lsb-release gnupg && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \
     apt-get update && apt-get -qq -y install gcsfuse
 
-RUN pip install jupyter-resource-usage==0.6.0
+RUN pip install jupyter-resource-usage==0.6.0 && \
+    jupyter serverextension enable --py jupyter-resource-usage --sys-prefix && \
+    jupyter nbextension install --py jupyter-resource-usage --sys-prefix && \
+    jupyter nbextension enable --py jupyter-resource-usage --sys-prefix
 
 
 USER $NB_USER
