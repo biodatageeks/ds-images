@@ -123,7 +123,7 @@ RUN cd /tmp && \
     cd jupyter-launcher-shortcuts && \
     pip install -e . && \
     jupyter labextension install jupyterlab-launcher-shortcuts && \
-    jupyter serverextension enable jupyter_launcher_shortcuts
+    jupyter serverextension enable jupyter_launcher_shortcuts --sys-prefix
 
 
 
@@ -148,9 +148,8 @@ RUN apt-get update && apt-get -qq -y install lsb-release gnupg && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \
     apt-get update && apt-get -qq -y install gcsfuse
 
-RUN pip install nbresuse && \
+RUN pip install -U nbresuse==0.3.3 && \
     jupyter labextension install jupyterlab-topbar-extension jupyterlab-system-monitor
-
 
 USER $NB_USER
 
