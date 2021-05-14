@@ -4,7 +4,7 @@ FROM $BASE_IMAGE
 
 USER root
 
-ARG JAVA_VERSION=8.0.265.hs-adpt
+ARG JAVA_VERSION=8.0.292.hs-adpt
 ARG SCALA_VERSION=2.12.10
 ARG SBT_VERSION=1.3.10
 ARG SPARK_VERSION
@@ -123,29 +123,7 @@ RUN cd /tmp && \
     cd jupyter-launcher-shortcuts && \
     pip install -e . && \
     jupyter labextension install jupyterlab-launcher-shortcuts && \
-    jupyter serverextension enable jupyter_launcher_shortcuts
-
-RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
-        pip install -U igv-jupyterlab==$IGV_JUPYTER_VERSION && \
-        jupyter labextension install @jupyter-widgets/jupyterlab-manager @epi2melabs/igv-jupyterlab && \
-        apt-get update && \
-        apt-get -qq -y install samtools bedtools libhts-dev fastqc bwa tabix bcftools bowtie2 && \
-        cd /opt && \
-        wget https://github.com/broadinstitute/gatk/releases/download/$GATK_VERSION/gatk-$GATK_VERSION.zip && \
-        unzip gatk-$GATK_VERSION.zip && \
-        rm -rf gatk-$GATK_VERSION.zip && \
-        cd /opt && git clone https://github.com/atks/vt.git  && \
-        cd vt && git checkout 0.57721 && make &&\
-        apt -qq -y install libmodule-build-perl \
-                    libdbi-perl \
-                    libdbd-mysql-perl \
-                    build-essential \
-                    zlib1g-dev && \
-        cd /tmp && git clone https://github.com/Ensembl/ensembl-vep.git && \
-        cd ensembl-vep && git checkout release/$VEP_VERSION && \
-        ./INSTALL.pl -a a && \
-        mv /tmp/ensembl-vep /opt/ ;\
-    fi
+    jupyter serverextension enable jupyter_launcher_shortcuts --sys-prefix
 
 
 
@@ -163,7 +141,16 @@ RUN cd /tmp && \
     mv ./kubectl /usr/local/bin/kubectl
 
 RUN mkdir -p /mnt/data && chown -R $NB_USER /mnt/data
-ADD resources/edugen/bin/* /usr/local/bin/
+
+RUN apt-get update && apt-get -qq -y install lsb-release gnupg && \
+    export GCSFUSE_REPO=gcsfuse-`lsb_release -c -s` && \
+    echo "deb http://packages.cloud.google.com/apt $GCSFUSE_REPO main" | tee /etc/apt/sources.list.d/gcsfuse.list && \
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \
+    apt-get update && apt-get -qq -y install gcsfuse
+
+RUN pip install -U nbresuse==0.3.3 && \
+    jupyter labextension install jupyterlab-topbar-extension jupyterlab-system-monitor
+
 USER $NB_USER
 
 
@@ -184,12 +171,6 @@ RUN source /opt/conda/etc/profile.d/conda.sh && \
 
 RUN  source /opt/conda/etc/profile.d/conda.sh && \
      conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
-     if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
-        pip install -U pysam \
-                       multiqc \
-                       biothings_client \
-                       igv-jupyterlab==$IGV_JUPYTER_VERSION; \
-    fi && \
     if [ $MLFLOW_ENABLED == "true" ]; then \
         pip install -U mlflow==$MLFLOW_VERSION \
                        PyArrow==0.15.1; \
