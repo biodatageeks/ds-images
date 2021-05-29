@@ -151,6 +151,22 @@ RUN apt-get update && apt-get -qq -y install lsb-release gnupg && \
 RUN pip install -U nbresuse==0.3.3 && \
     jupyter labextension install jupyterlab-topbar-extension jupyterlab-system-monitor
 
+RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
+   apt install -y unzip \
+      curl \
+      libmodule-build-perl \
+      libdbi-perl \
+      libdbd-mysql-perl \
+      build-essential \
+      zlib1g-dev && \
+    cd /tmp && \
+    git clone https://github.com/Ensembl/ensembl-vep.git && \
+    git checkout release/$VEP_VERSION && \
+    perl INSTALL.pl -a a && \
+    mkdir -p /opt && mv /tmp/ensembl-vep /opt/ \
+    fi
+
+
 USER $NB_USER
 
 
@@ -190,21 +206,6 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
 RUN cd /tmp && wget https://repo1.maven.org/maven2/com/google/cloud/bigdataoss/gcs-connector/${GCS_CONNECTOR_VERSION}/gcs-connector-${GCS_CONNECTOR_VERSION}-shaded.jar && \
     wget https://repo1.maven.org/maven2/com/google/cloud/google-cloud-nio/${GCS_NIO_VERSION}/google-cloud-nio-${GCS_NIO_VERSION}-shaded.jar
 
-
-RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
-    apt install -y unzip \
-        curl \
-        libmodule-build-perl \
-        libdbi-perl \
-        libdbd-mysql-perl \
-        build-essential \
-        zlib1g-dev && \
-    cd /tmp && \
-    git clone https://github.com/Ensembl/ensembl-vep.git && \
-    git checkout release/$VEP_VERSION && \
-    perl INSTALL.pl -a a && \
-    mkdir -p /opt && mv /tmp/ensembl-vep /opt/ \
-    fi
 
 #airflow
 ENV AIRFLOW_HOME=/home/$USER_NAME/airflow
