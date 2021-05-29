@@ -165,7 +165,7 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
     cd ensembl-vep && \
     git checkout release/$VEP_VERSION && \
     perl INSTALL.pl -n -a a && \
-    mkdir -p /opt && mv /tmp/ensembl-vep /opt/; \
+    mkdir -p /opt && cp -r /tmp/ensembl-vep /opt/; \
     fi
 
 USER $NB_USER
