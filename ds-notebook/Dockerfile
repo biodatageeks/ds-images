@@ -121,6 +121,7 @@ RUN pip install \
 RUN cd /tmp && \
     git clone https://github.com/yuvipanda/jupyter-launcher-shortcuts.git && \
     cd jupyter-launcher-shortcuts && \
+    git checkout 274b69888b4c11cddb69d284edc38a1e74e1cdb7 && \
     pip install -e . && \
     jupyter labextension install jupyterlab-launcher-shortcuts && \
     jupyter serverextension enable jupyter_launcher_shortcuts --sys-prefix
@@ -150,6 +151,25 @@ RUN apt-get update && apt-get -qq -y install lsb-release gnupg && \
 
 RUN pip install -U nbresuse==0.3.3 && \
     jupyter labextension install jupyterlab-topbar-extension jupyterlab-system-monitor
+
+RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
+   apt install -y unzip \
+      curl \
+      libmodule-build-perl \
+      libdbi-perl \
+      libdbd-mysql-perl \
+      build-essential \
+      cpanminus \
+      zlib1g-dev && \
+    cd /tmp && \
+    git clone https://github.com/Ensembl/ensembl-vep.git && \
+    cd ensembl-vep && \
+    cpanm inc::latest && \
+    cpanm Module::Build && \
+    git checkout release/$VEP_VERSION && \
+    perl INSTALL.pl -n -a a && \
+    mkdir -p /opt && cp -r /tmp/ensembl-vep /opt/; \
+    fi
 
 USER $NB_USER
 
@@ -189,6 +209,7 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
 
 RUN cd /tmp && wget https://repo1.maven.org/maven2/com/google/cloud/bigdataoss/gcs-connector/${GCS_CONNECTOR_VERSION}/gcs-connector-${GCS_CONNECTOR_VERSION}-shaded.jar && \
     wget https://repo1.maven.org/maven2/com/google/cloud/google-cloud-nio/${GCS_NIO_VERSION}/google-cloud-nio-${GCS_NIO_VERSION}-shaded.jar
+
 
 #airflow
 ENV AIRFLOW_HOME=/home/$USER_NAME/airflow
