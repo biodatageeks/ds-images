@@ -162,9 +162,10 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
       zlib1g-dev && \
     cd /tmp && \
     git clone https://github.com/Ensembl/ensembl-vep.git && \
+    cd ensembl-vep && \
     git checkout release/$VEP_VERSION && \
     perl INSTALL.pl -a a && \
-    mkdir -p /opt && mv /tmp/ensembl-vep /opt/ \
+    mkdir -p /opt && mv /tmp/ensembl-vep /opt/; \
     fi
 
 
