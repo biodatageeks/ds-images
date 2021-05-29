@@ -203,7 +203,7 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
     git clone https://github.com/Ensembl/ensembl-vep.git && \
     git checkout release/$VEP_VERSION && \
     perl INSTALL.pl -a a && \
-    mkdir -p /opt && mv /tmp/ensembl-vep /opt/
+    mkdir -p /opt && mv /tmp/ensembl-vep /opt/ \
     fi
 
 #airflow
