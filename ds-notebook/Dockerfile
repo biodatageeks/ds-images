@@ -159,10 +159,13 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
       libdbi-perl \
       libdbd-mysql-perl \
       build-essential \
+      cpanminus \
       zlib1g-dev && \
     cd /tmp && \
     git clone https://github.com/Ensembl/ensembl-vep.git && \
     cd ensembl-vep && \
+    cpanm inc::latest && \
+    cpanm Module::Build && \
     git checkout release/$VEP_VERSION && \
     perl INSTALL.pl -n -a a && \
     mkdir -p /opt && cp -r /tmp/ensembl-vep /opt/; \
