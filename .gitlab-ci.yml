@@ -39,7 +39,7 @@ variables:
   KUBECTL_VERSION: 1.20.0
   GCS_NIO_VERSION: 0.120.0-alpha
   GCS_CONNECTOR_VERSION: hadoop2-1.9.17
-  VEP_VERSION: "102.0"
+  VEP_VERSION: "101.0"
   SPARK_PVC_NAME: pvc-shared-pipeline
   SEQUILA_DEV_ENABLED: "false"
 
@@ -83,6 +83,8 @@ variables:
   SCALA_VERSION: 2.12.10
   SEQUILA_VERSION: "org.biodatageeks:sequila_2.12:0.6.5"
   PYSEQUILA_VERSION: 0.2.0
+  SEQTENDER_VERSION: "org.biodatageeks:seqtender_2.12:0.4.0"
+  PYSEQTENDER_VERSION: 0.1.2
   JUPYTER_KERNEL_NAME: edugen
   MLFLOW_ENABLED: "false"
   AUTO_BUCKET_ENABLED: "false"
