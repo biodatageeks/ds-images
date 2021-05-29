@@ -164,11 +164,9 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
     git clone https://github.com/Ensembl/ensembl-vep.git && \
     cd ensembl-vep && \
     git checkout release/$VEP_VERSION && \
-    perl INSTALL.pl -a a && \
+    perl INSTALL.pl -n -a a && \
     mkdir -p /opt && mv /tmp/ensembl-vep /opt/; \
-    fi && \
-    pip install pyseqtender==$PYSEQTENDER_VERSION
-
+    fi
 
 USER $NB_USER
 
