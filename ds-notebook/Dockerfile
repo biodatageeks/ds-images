@@ -121,6 +121,7 @@ RUN pip install \
 RUN cd /tmp && \
     git clone https://github.com/yuvipanda/jupyter-launcher-shortcuts.git && \
     cd jupyter-launcher-shortcuts && \
+    git checkout 274b69888b4c11cddb69d284edc38a1e74e1cdb7 && \
     pip install -e . && \
     jupyter labextension install jupyterlab-launcher-shortcuts && \
     jupyter serverextension enable jupyter_launcher_shortcuts --sys-prefix
