@@ -166,7 +166,8 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
     git checkout release/$VEP_VERSION && \
     perl INSTALL.pl -a a && \
     mkdir -p /opt && mv /tmp/ensembl-vep /opt/; \
-    fi
+    fi && \
+    pip install pyseqtender==$PYSEQTENDER_VERSION
 
 
 USER $NB_USER
