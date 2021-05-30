@@ -179,7 +179,13 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
     cpanm Module::Build && \
     git checkout release/$VEP_VERSION && \
     perl INSTALL.pl -n -a a && \
-    mkdir -p /opt && cp -r /tmp/ensembl-vep /opt/; \
+    mkdir -p /opt && cp -r /tmp/ensembl-vep /opt/ && \
+    cd /tmp && \
+    git clone https://github.com/atks/vt.git  && \
+    cd vt && \
+    git checkout 0.57721 && \
+    make && \
+    mv vt /usr/bin; \
     fi
 
 RUN cd /opt/ && wget https://github.com/cdr/code-server/releases/download/v${VS_CODE_VERSION}/code-server_${VS_CODE_VERSION}_amd64.deb && \
