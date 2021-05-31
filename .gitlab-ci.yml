@@ -297,7 +297,28 @@ buildPublishSparkPy3:
   tags: [ docker ]
   except: [ main ]
 
-
+buildPublishEdugenSparkPy3:
+  stage: buildPublish
+  variables:
+    NAMESPACE_IMAGE_NAME: biodatageeks/${SPARK_IMAGE_NAME}
+    JUPYTER_KERNEL_NAME: edugen
+  image:
+    name: docker:$DOCKER_VERSION
+  before_script:
+    - source $VERSION_FILE
+    - docker login -u $DOCKER_USER -p $DOCKER_PASSWD docker.io
+  script:
+    - cd spark-executor
+    - docker build
+      --pull
+      --build-arg BASE_IMAGE=$SPARK_BASE_IMAGE
+      --build-arg JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
+      --build-arg GLOW_PY_VERSION=$GLOW_PY_VERSION
+      -t $NAMESPACE_IMAGE_NAME:v3.0.1-${JUPYTER_KERNEL_NAME}-$VERSION
+      .
+    - docker push $NAMESPACE_IMAGE_NAME:v3.0.1-${JUPYTER_KERNEL_NAME}-$VERSION
+  tags: [ docker ]
+  except: [ main ]
 
 ### https://github.com/biodatageeks/ds-images/issues/24
 #buildPublishSparkPy24:
