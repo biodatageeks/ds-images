@@ -53,8 +53,7 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
         cpanm Module::Build && \
         git checkout release/$VEP_VERSION && \
         perl INSTALL.pl -n -a a && \
-        mkdir -p /opt && mv /tmp/ensembl-vep /opt/ && \
-        pip3.6 install glow.py==$GLOW_PY_VERSION; \
+        mkdir -p /opt && mv /tmp/ensembl-vep /opt/; \
     fi
 
 ENV PATH=$PATH:/opt/ensembl-vep
