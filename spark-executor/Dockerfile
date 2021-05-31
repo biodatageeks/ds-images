@@ -38,7 +38,8 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
             liblzma-dev \
             build-essential \
             libcurl3-dev \
-            unzip && \
+            unzip \
+            openssl && \
         cd /tmp && \
         git clone https://github.com/atks/vt.git  && \
         cd vt && \
