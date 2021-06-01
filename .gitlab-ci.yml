@@ -107,6 +107,22 @@ variables:
   BIG_DATA_GENOMICS_ENABLED: "true"
   NOTEBOOKS_REPO: https://github.com/IMID/edugen_pub
 
+.spark301edugenImageVars: &spark301edugenImageVars
+  SPARK_VERSION: "3.0.1"
+  SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
+  PYTHON_MINOR: "3.7"
+  SCALA_VERSION: 2.12.10
+  SEQUILA_VERSION: "org.biodatageeks:sequila_2.12:0.6.5"
+  PYSEQUILA_VERSION: 0.2.0
+  JUPYTER_KERNEL_NAME: edugen
+  MLFLOW_ENABLED: "false"
+  AUTO_BUCKET_ENABLED: "false"
+  AIRFLOW_ENABLED: "false"
+  BIG_DATA_GENOMICS_ENABLED: "true"
+  SEQUILA_DEV_ENABLED: "true"
+  NOTEBOOKS_REPO: https://github.com/IMID/edugen_pub
+
+
 # --------------------------------- STAGE: version ---------------------------------------------------------------------
 version-branch:
   stage: version
@@ -234,6 +250,15 @@ buildPublishspark24Edugen:
     <<: *spark24edugenImageVars
   <<: *buildPublish
   except: [ main ]
+
+
+buildPublishspark301Edugen:
+  stage: buildPublish
+  variables:
+    <<: *spark24edugenImageVars
+  <<: *buildPublish
+  except: [ main ]
+
 
 #publishGCRspark24Edugen:
 #  stage: publishGCR
