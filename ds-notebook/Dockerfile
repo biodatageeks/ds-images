@@ -185,8 +185,16 @@ RUN cd /opt/ && wget https://github.com/cdr/code-server/releases/download/v${VS_
     wget https://github.com/cdr/code-server/releases/download/v${VS_CODE_VERSION}/code-server-${VS_CODE_VERSION}-linux-amd64.tar.gz && \
     tar zxvf code-server-${VS_CODE_VERSION}-linux-amd64.tar.gz
 
-USER $NB_USER
+#RUN mkdir -p /tmp/jovyan/ && \
+#    chown -R $NB_USER /tmp/jovyan/ && \
+#    chmod -R 777 /tmp/jovyan/
+#
 
+USER $NB_USER
+RUN /opt/code-server-*-linux-amd64/bin/code-server \
+    --extensions-dir /tmp/$NB_USER/extensions \
+    --user-data-dir /tmp/$NB_USER/data \
+    --install-extension ms-python.python
 
 RUN source /opt/conda/etc/profile.d/conda.sh && \
     conda create python=$PYTHON_MINOR -p $HOME/venv/$JUPYTER_KERNEL_NAME -y && \
