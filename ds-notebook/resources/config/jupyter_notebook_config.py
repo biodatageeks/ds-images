@@ -40,6 +40,17 @@ if os.getenv('AIRFLOW_ENABLED', 'false') == 'true':
             'icon_path': '/opt/tools/logos/airflow.svg',
         }
     }
+if os.getenv('VS_CODE_ENABLED', 'false') == 'true':
+    c.ServerProxy.servers['vscode'] = {
+        'command': ['/bin/bash', '-c', '/opt/tools/bin/start-vscode.sh', '{port}'],
+        'port': 7000,
+        'absolute_url': False,
+        'timeout': 30,
+        'launcher_entry': {
+            'title': "VSCode",
+            'icon_path': '/opt/tools/logos/vs-code.svg',
+        }
+    }
 
 c.LauncherShortcuts.shortcuts = {
     'spark': {

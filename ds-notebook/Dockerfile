@@ -63,6 +63,8 @@ ENV LAB_DOMAIN=$LAB_DOMAIN
 ENV GCS_NIO_VERSION=$GCS_NIO_VERSION
 ENV GCS_CONNECTOR_VERSION=$GCS_CONNECTOR_VERSION
 
+ARG VS_CODE_VERSION
+ENV VS_CODE_VERSION=$VS_CODE_VERSION
 
 
 RUN apt-get update && apt-get -qq -y install \
@@ -178,6 +180,10 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
     perl INSTALL.pl -n -a a && \
     mkdir -p /opt && cp -r /tmp/ensembl-vep /opt/; \
     fi
+
+RUN cd /opt/ && wget https://github.com/cdr/code-server/releases/download/v${VS_CODE_VERSION}/code-server_${VS_CODE_VERSION}_amd64.deb && \
+    wget https://github.com/cdr/code-server/releases/download/v${VS_CODE_VERSION}/code-server-${VS_CODE_VERSION}-linux-amd64.tar.gz && \
+    tar zxvf code-server-${VS_CODE_VERSION}-linux-amd64.tar.gz
 
 USER $NB_USER
 
