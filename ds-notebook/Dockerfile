@@ -232,7 +232,7 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
     if [ $KEDRO_ENABLED == "true" ]; then \
         pip install -U pip==$PIP_VERSION && \
         pip install -U kedro==$KEDRO_VERSION \
-                       kedro-viz kedro-airflow==0.4.1 kedro-mlflow==0.7.1; \
+                       kedro-viz kedro-airflow==0.4.1 kedro-mlflow==0.7.2; \
     fi && \
     pip install -U "sqlalchemy<1.4.0" && \
     conda deactivate

@@ -43,7 +43,7 @@ variables:
   SPARK_PVC_NAME: pvc-shared-pipeline
   SEQUILA_DEV_ENABLED: "false"
   KEDRO_ENABLED: "false"
-  KEDRO_VERSION: 0.17.2
+  KEDRO_VERSION: 0.17.3
   VS_CODE_ENABLED: "false"
   VS_CODE_VERSION: 3.10.2
 
