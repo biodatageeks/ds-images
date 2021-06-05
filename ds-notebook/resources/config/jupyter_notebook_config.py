@@ -64,7 +64,7 @@ if os.getenv('KEDRO_ENABLED', 'false') == 'true':
     c.LauncherShortcuts.shortcuts = {
         'kedro-viz-short': {
             'title': 'Kedro Viz - proxy',
-            'target': '/proxy/4141/',
+            'target': f'https://{os.getenv("LAB_DOMAIN", "localhost")}/user/{os.environ["USER"]}/proxy/4141/',
             'icon_path': '/opt/tools/logos/kedro.svg'
         }
     }
