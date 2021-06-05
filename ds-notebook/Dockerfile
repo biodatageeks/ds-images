@@ -186,11 +186,6 @@ RUN cd /opt/ && wget https://github.com/cdr/code-server/releases/download/v${VS_
     wget https://github.com/cdr/code-server/releases/download/v${VS_CODE_VERSION}/code-server-${VS_CODE_VERSION}-linux-amd64.tar.gz && \
     tar zxvf code-server-${VS_CODE_VERSION}-linux-amd64.tar.gz
 
-#RUN mkdir -p /tmp/jovyan/ && \
-#    chown -R $NB_USER /tmp/jovyan/ && \
-#    chmod -R 777 /tmp/jovyan/
-#
-
 USER $NB_USER
 RUN /opt/code-server-*-linux-amd64/bin/code-server \
     --extensions-dir /tmp/$NB_USER/extensions \
