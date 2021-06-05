@@ -266,5 +266,5 @@ ENV PATH=$PATH:/tmp/jovyan/.local/bin
 
 #kedro
 ENV KEDRO_VERSION=$KEDRO_VERSION
-
+ENV PYTHON_MINOR=$PYTHON_MINOR
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
