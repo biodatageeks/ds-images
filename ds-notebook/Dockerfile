@@ -9,6 +9,7 @@ ARG SCALA_VERSION=2.12.10
 ARG SBT_VERSION=1.3.10
 ARG SPARK_VERSION
 ARG HADOOP_VERSION=2.7
+ARG PIP_VERSION=21.0.1
 ARG PY4J_VERSION="0.10.9"
 ARG NOTEBOOKS_REPO
 ARG JUPYTER_KERNEL_NAME
@@ -37,6 +38,9 @@ ARG GCS_CONNECTOR_VERSION
 ARG VEP_VERSION
 ARG SPARK_PVC_NAME
 ARG SEQUILA_DEV_ENABLED
+ARG VS_CODE_ENABLED
+ARG KEDRO_ENABLED
+ARG KEDRO_VERSION
 
 ENV MLFLOW_ENABLED=$MLFLOW_ENABLED
 ENV AUTO_BUCKET_ENABLED=$AUTO_BUCKET_ENABLED
@@ -46,6 +50,9 @@ ENV SEQUILA_DEV_ENABLED=$SEQUILA_DEV_ENABLED
 ENV GLOW_VERSION=$GLOW_VERSION
 ENV SEQUILA_VERSION=$SEQUILA_VERSION
 ENV SEQTENDER_VERSION=$SEQTENDER_VERSION
+ENV VS_CODE_ENABLED=$VS_CODE_ENABLED
+ENV KEDRO_ENABLED=$KEDRO_ENABLED
+
 
 ENV NOTEBOOKS_REPO=$NOTEBOOKS_REPO
 ENV JUPYTER_KERNEL_NAME=$JUPYTER_KERNEL_NAME
@@ -57,6 +64,8 @@ ENV LAB_DOMAIN=$LAB_DOMAIN
 ENV GCS_NIO_VERSION=$GCS_NIO_VERSION
 ENV GCS_CONNECTOR_VERSION=$GCS_CONNECTOR_VERSION
 
+ARG VS_CODE_VERSION
+ENV VS_CODE_VERSION=$VS_CODE_VERSION
 
 
 RUN apt-get update && apt-get -qq -y install \
@@ -142,6 +151,8 @@ RUN cd /tmp && \
     mv ./kubectl /usr/local/bin/kubectl
 
 RUN mkdir -p /mnt/data && chown -R $NB_USER /mnt/data
+ADD resources/edugen/bin/* /usr/local/bin/
+RUN apt-get install python3-opencv -y
 
 RUN apt-get update && apt-get -qq -y install lsb-release gnupg && \
     export GCSFUSE_REPO=gcsfuse-`lsb_release -c -s` && \
@@ -171,12 +182,20 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
     mkdir -p /opt && cp -r /tmp/ensembl-vep /opt/; \
     fi
 
-USER $NB_USER
+RUN cd /opt/ && wget https://github.com/cdr/code-server/releases/download/v${VS_CODE_VERSION}/code-server_${VS_CODE_VERSION}_amd64.deb && \
+    wget https://github.com/cdr/code-server/releases/download/v${VS_CODE_VERSION}/code-server-${VS_CODE_VERSION}-linux-amd64.tar.gz && \
+    tar zxvf code-server-${VS_CODE_VERSION}-linux-amd64.tar.gz
 
+USER $NB_USER
+RUN /opt/code-server-*-linux-amd64/bin/code-server \
+    --extensions-dir /tmp/$NB_USER/extensions \
+    --user-data-dir /tmp/$NB_USER/data \
+    --config /tmp/$NB_USER/config.yaml \
+    --install-extension ms-python.python
 
 RUN source /opt/conda/etc/profile.d/conda.sh && \
     conda create python=$PYTHON_MINOR -p $HOME/venv/$JUPYTER_KERNEL_NAME -y && \
-        conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
+    conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
     pip install -U ipykernel==5.3.4 \
                     pandas==1.1.4 \
                     pyspark==$SPARK_VERSION \
@@ -191,20 +210,36 @@ RUN source /opt/conda/etc/profile.d/conda.sh && \
 
 RUN  source /opt/conda/etc/profile.d/conda.sh && \
      conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
+     if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
+        pip install -U pip==$PIP_VERSION && \
+        pip install -U pysam \
+                       multiqc \
+                       biothings_client; \
+#                       igv-jupyterlab==$IGV_JUPYTER_VERSION; \ FIXME: no longer supported in jupyterlab < 3.x
+    fi && \
     if [ $MLFLOW_ENABLED == "true" ]; then \
+        pip install -U pip==$PIP_VERSION && \
         pip install -U mlflow==$MLFLOW_VERSION \
                        PyArrow==0.15.1; \
     fi && \
     if [ $AIRFLOW_ENABLED == "true" ]; then \
-        pip install -U pip==20.2.4 && \
+        pip install -U pip==$PIP_VERSION && \
         pip install -U apache-airflow==$AIRFLOW_VERSION \
                        apache-airflow-providers-cncf-kubernetes; \
     fi && \
     if [ $BIG_DATA_GENOMICS_ENABLED == "true" ]; then \
+        pip install -U pip==$PIP_VERSION && \
         pip install -U pysequila==$PYSEQUILA_VERSION \
-                       pyseqtender==$PYSEQTENDER_VERSION \
+                       opencv-python==4.5.1.48 \
+#                       pyseqtender==$PYSEQTENDER_VERSION \ /FIXME:temporary disabling pyseqtender does not support spark 3.0.1
                        glow.py==$GLOW_PY_VERSION; \
     fi && \
+    if [ $KEDRO_ENABLED == "true" ]; then \
+        pip install -U pip==$PIP_VERSION && \
+        pip install -U kedro==$KEDRO_VERSION \
+                       kedro-viz kedro-airflow==0.4.1 kedro-mlflow==0.7.2; \
+    fi && \
+    pip install -U "sqlalchemy<1.4.0" && \
     conda deactivate
 
 RUN cd /tmp && wget https://repo1.maven.org/maven2/com/google/cloud/bigdataoss/gcs-connector/${GCS_CONNECTOR_VERSION}/gcs-connector-${GCS_CONNECTOR_VERSION}-shaded.jar && \
@@ -219,4 +254,12 @@ ENV SPARK_PVC_NAME=$SPARK_PVC_NAME
 #spark pod template
 ADD resources/spark/exec_pod_template.template /tmp/
 
+
+#install k9s
+RUN curl -sS https://webinstall.dev/k9s | bash
+ENV PATH=$PATH:/tmp/jovyan/.local/bin
+
+#kedro
+ENV KEDRO_VERSION=$KEDRO_VERSION
+ENV PYTHON_MINOR=$PYTHON_MINOR
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

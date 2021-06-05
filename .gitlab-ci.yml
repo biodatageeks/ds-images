@@ -42,6 +42,10 @@ variables:
   VEP_VERSION: "101.0"
   SPARK_PVC_NAME: pvc-shared-pipeline
   SEQUILA_DEV_ENABLED: "false"
+  KEDRO_ENABLED: "false"
+  KEDRO_VERSION: 0.17.3
+  VS_CODE_ENABLED: "false"
+  VS_CODE_VERSION: 3.10.2
 
 
 
@@ -54,8 +58,10 @@ variables:
   JUPYTER_KERNEL_NAME: datascience
   MLFLOW_ENABLED: "true"
   AUTO_BUCKET_ENABLED: "true"
-  AIRFLOW_ENABLED: "false"
+  AIRFLOW_ENABLED: "true"
   BIG_DATA_GENOMICS_ENABLED: "false"
+  VS_CODE_ENABLED: "true"
+  KEDRO_ENABLED: "true"
   NOTEBOOKS_REPO: https://github.com/biodatageeks/ds-notebooks
 
 ### image for sequila devel
@@ -64,7 +70,7 @@ variables:
   SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
   PYTHON_MINOR: "3.7"
   SCALA_VERSION: 2.12.10
-  SEQUILA_VERSION: "org.biodatageeks:sequila_2.12:0.6.5"
+  SEQUILA_VERSION: "org.biodatageeks:sequila_2.12:0.6.6"
   PYSEQUILA_VERSION: 0.2.0
   JUPYTER_KERNEL_NAME: pysequila
   MLFLOW_ENABLED: "false"
@@ -81,7 +87,7 @@ variables:
   SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1"
   PYTHON_MINOR: "3.7"
   SCALA_VERSION: 2.12.10
-  SEQUILA_VERSION: "org.biodatageeks:sequila_2.12:0.6.5"
+  SEQUILA_VERSION: "org.biodatageeks:sequila_2.12:0.6.6"
   PYSEQUILA_VERSION: 0.2.0
   SEQTENDER_VERSION: "org.biodatageeks:seqtender_2.12:0.4.0"
   PYSEQTENDER_VERSION: 0.1.2
@@ -179,6 +185,10 @@ version-tag:
       --build-arg VEP_VERSION=$VEP_VERSION
       --build-arg SPARK_PVC_NAME=$SPARK_PVC_NAME
       --build-arg SEQUILA_DEV_ENABLED=$SEQUILA_DEV_ENABLED
+      --build-arg KEDRO_ENABLED=$KEDRO_ENABLED
+      --build-arg KEDRO_VERSION=$KEDRO_VERSION
+      --build-arg VS_CODE_VERSION=$VS_CODE_VERSION
+      --build-arg VS_CODE_ENABLED=$VS_CODE_ENABLED
       -t $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION
       .
     - docker push $NAMESPACE_IMAGE_NAME:spark-$JUPYTER_KERNEL_NAME-$SPARK_VERSION-$VERSION

@@ -40,6 +40,17 @@ if os.getenv('AIRFLOW_ENABLED', 'false') == 'true':
             'icon_path': '/opt/tools/logos/airflow.svg',
         }
     }
+if os.getenv('VS_CODE_ENABLED', 'false') == 'true':
+    c.ServerProxy.servers['vscode'] = {
+        'command': ['/bin/bash', '-c', '/opt/tools/bin/start-vscode.sh', '{port}'],
+        'port': 7000,
+        'absolute_url': False,
+        'timeout': 30,
+        'launcher_entry': {
+            'title': "VSCode",
+            'icon_path': '/opt/tools/logos/vs-code.svg',
+        }
+    }
 
 c.LauncherShortcuts.shortcuts = {
     'spark': {
@@ -49,6 +60,14 @@ c.LauncherShortcuts.shortcuts = {
     }
 }
 
+if os.getenv('KEDRO_ENABLED', 'false') == 'true':
+    c.LauncherShortcuts.shortcuts = {
+        'kedro-viz-short': {
+            'title': 'Kedro Viz - proxy',
+            'target': f'https://{os.getenv("LAB_DOMAIN", "localhost")}/user/{os.environ["USER"]}/proxy/4141/',
+            'icon_path': '/opt/tools/logos/kedro.svg'
+        }
+    }
 
 # Generate a self-signed certificate
 if 'GEN_CERT' in os.environ:
