@@ -217,8 +217,8 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
         pip install -U pip==$PIP_VERSION && \
         pip install -U pysam \
                        multiqc \
-                       biothings_client \
-                       igv-jupyterlab==$IGV_JUPYTER_VERSION; \
+                       biothings_client
+#                       igv-jupyterlab==$IGV_JUPYTER_VERSION; \ FIXME: no longer supported in jupyterlab < 3.x
     fi && \
     if [ $MLFLOW_ENABLED == "true" ]; then \
         pip install -U pip==$PIP_VERSION && \
