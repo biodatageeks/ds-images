@@ -194,6 +194,7 @@ USER $NB_USER
 RUN /opt/code-server-*-linux-amd64/bin/code-server \
     --extensions-dir /tmp/$NB_USER/extensions \
     --user-data-dir /tmp/$NB_USER/data \
+    --config /tmp/$NB_USER/config.yaml \
     --install-extension ms-python.python
 
 RUN source /opt/conda/etc/profile.d/conda.sh && \
@@ -217,7 +218,7 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
         pip install -U pip==$PIP_VERSION && \
         pip install -U pysam \
                        multiqc \
-                       biothings_client
+                       biothings_client; \
 #                       igv-jupyterlab==$IGV_JUPYTER_VERSION; \ FIXME: no longer supported in jupyterlab < 3.x
     fi && \
     if [ $MLFLOW_ENABLED == "true" ]; then \
