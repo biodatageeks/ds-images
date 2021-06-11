@@ -68,7 +68,7 @@ ARG VS_CODE_VERSION
 ENV VS_CODE_VERSION=$VS_CODE_VERSION
 
 
-RUN apt-get update && apt-get -qq -y install \
+RUN apt-get update --fix-missing && apt-get -qq -y install \
     curl \
     unzip \
     zip \
@@ -124,6 +124,7 @@ ADD resources/.boto_template /tmp/.boto_template
 RUN pip install \
     gsutil==$GSUTIL_VERSION \
     kubernetes==12.0.1 \
+    pylint==2.8.3 \
     jupyter-server-proxy==1.5.0 && \
     jupyter labextension install @jupyterlab/server-proxy
 
