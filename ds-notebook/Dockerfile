@@ -266,9 +266,6 @@ ADD resources/spark/exec_pod_template.template /tmp/
 RUN curl -sS https://webinstall.dev/k9s | bash
 ENV PATH=$PATH:/tmp/jovyan/.local/bin
 
-RUN sed -i '1s/^/source /opt/conda/etc/profile.d/conda.sh \n/' .bashrc
-
-
 #kedro
 ENV KEDRO_VERSION=$KEDRO_VERSION
 ENV PYTHON_MINOR=$PYTHON_MINOR
