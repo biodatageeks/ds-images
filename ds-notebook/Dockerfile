@@ -85,7 +85,9 @@ RUN apt-get update --fix-missing && apt-get -qq -y install \
     libcurl4-gnutls-dev \
     libssl-dev \
     g++ \
-    vcftools
+    vcftools \
+    libopenblas-dev \
+    liblapack-dev
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 ARG USER_NAME=jovyan
@@ -270,3 +272,7 @@ ENV PATH=$PATH:/tmp/jovyan/.local/bin
 ENV KEDRO_VERSION=$KEDRO_VERSION
 ENV PYTHON_MINOR=$PYTHON_MINOR
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+RUN git clone https://github.com/hail-is/hail.git && \
+    cd hail/hail && \
+    make install-on-cluster HAIL_COMPILE_NATIVES=1 SCALA_VERSION=${SCALA_VERSION} SPARK_VERSION=${SPARK_VERSION}
