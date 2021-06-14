@@ -178,9 +178,16 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
     cd ensembl-vep && \
     cpanm inc::latest && \
     cpanm Module::Build && \
+    cpanm Set::IntervalTree && \
     git checkout release/$VEP_VERSION && \
     perl INSTALL.pl -n -a a && \
     mkdir -p /opt && cp -r /tmp/ensembl-vep /opt/ && \
+    cd /tmp && \
+    git clone https://github.com/Ensembl/ensembl-xs.git && \
+    cd ensembl-xs  && \
+    perl Makefile.PL && \
+    make && \
+    make install && \
     cd /tmp && \
     git clone https://github.com/atks/vt.git  && \
     cd vt && \
