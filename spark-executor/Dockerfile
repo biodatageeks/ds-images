@@ -41,7 +41,10 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
             unzip \
             libssl-dev \
             samtools \
-            openssl && \
+            openssl \
+            mbuffer \
+            moreutils \
+            && \
         cd /tmp && \
         git clone https://github.com/atks/vt.git  && \
         cd vt && \
