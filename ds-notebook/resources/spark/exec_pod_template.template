@@ -5,8 +5,8 @@ spec:
     - effect: NoSchedule
       key: hub.jupyter.org/dedicated
       operator: Equal
-      value: user
+      value: executor
     - effect: NoSchedule
       key: hub.jupyter.org_dedicated
       operator: Equal
-      value: user
+      value: executor
