@@ -53,7 +53,7 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
         cpanm inc::latest && \
         cpanm Module::Build && \
         cpanm Set::IntervalTree && \
-        cpanm PerlIO::gzip \
+        cpanm PerlIO::gzip && \
         git checkout release/$VEP_VERSION && \
         perl INSTALL.pl -n -a a && \
         mkdir -p /opt && mv /tmp/ensembl-vep /opt/ && \
