@@ -273,7 +273,9 @@ ENV KEDRO_VERSION=$KEDRO_VERSION
 ENV PYTHON_MINOR=$PYTHON_MINOR
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-RUN cd /opt && \
+WORKDIR /tmp
+
+RUN cd /tmp && \
     git clone https://github.com/hail-is/hail.git && \
     cd hail/hail && \
     make install-on-cluster HAIL_COMPILE_NATIVES=1 SCALA_VERSION=${SCALA_VERSION} SPARK_VERSION=${SPARK_VERSION}
