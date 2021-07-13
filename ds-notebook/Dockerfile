@@ -4,7 +4,7 @@ FROM $BASE_IMAGE
 
 USER root
 
-ARG JAVA_VERSION=8.0.292.hs-adpt
+ARG JAVA_VERSION=11.0.9.hs-adpt
 ARG SCALA_VERSION=2.12.10
 ARG SBT_VERSION=1.3.10
 ARG SPARK_VERSION
@@ -85,7 +85,9 @@ RUN apt-get update --fix-missing && apt-get -qq -y install \
     libcurl4-gnutls-dev \
     libssl-dev \
     g++ \
-    vcftools
+    vcftools \
+    libopenblas-dev \
+    liblapack-dev
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 ARG USER_NAME=jovyan
@@ -270,3 +272,11 @@ ENV PATH=$PATH:/tmp/jovyan/.local/bin
 ENV KEDRO_VERSION=$KEDRO_VERSION
 ENV PYTHON_MINOR=$PYTHON_MINOR
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+WORKDIR /tmp
+
+RUN export JAVA_HOME=/tmp/jovyan/.sdkman/candidates/java/current/bin && \
+    cd /tmp && \
+    git clone https://github.com/hail-is/hail.git && \
+    cd hail/hail && \
+    make install-on-cluster HAIL_COMPILE_NATIVES=1 SCALA_VERSION=${SCALA_VERSION} SPARK_VERSION=${SPARK_VERSION}
