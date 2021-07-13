@@ -86,8 +86,8 @@ RUN apt-get update --fix-missing && apt-get -qq -y install \
     libssl-dev \
     g++ \
     vcftools \
-    libopenblas \
-    liblapack3
+    libopenblas-dev \
+    liblapack-dev
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 ARG USER_NAME=jovyan
