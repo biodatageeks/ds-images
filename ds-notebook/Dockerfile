@@ -274,10 +274,9 @@ ENV PYTHON_MINOR=$PYTHON_MINOR
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 WORKDIR /tmp
-RUN export JAVA_HOME=/tmp/jovyan/.sdkman/candidates/java/current/bin
-RUN echo $JAVA_HOME
 
-RUN cd /tmp && \
+RUN export JAVA_HOME=/tmp/jovyan/.sdkman/candidates/java/current/bin && \
+    cd /tmp && \
     git clone https://github.com/hail-is/hail.git && \
     cd hail/hail && \
     make install-on-cluster HAIL_COMPILE_NATIVES=1 SCALA_VERSION=${SCALA_VERSION} SPARK_VERSION=${SPARK_VERSION}
