@@ -275,7 +275,7 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 WORKDIR /tmp
 
-RUN export JAVA_HOME=/tmp/jovyan/.sdkman/candidates/java/current/bin && \
+RUN export JAVA_HOME=/tmp/jovyan/.sdkman/candidates/java/current && \
     cd /tmp && \
     git clone https://github.com/hail-is/hail.git && \
     cd hail/hail && \
