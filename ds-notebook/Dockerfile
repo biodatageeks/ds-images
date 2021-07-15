@@ -82,6 +82,7 @@ RUN apt-get update --fix-missing && apt-get -qq -y install \
     libz-dev \
     libbz2-dev \
     liblzma-dev \
+    liblz4-dev \
     libcurl4-gnutls-dev \
     libssl-dev \
     g++ \
