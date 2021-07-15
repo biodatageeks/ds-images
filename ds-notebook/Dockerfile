@@ -88,7 +88,8 @@ RUN apt-get update --fix-missing && apt-get -qq -y install \
     g++ \
     vcftools \
     libopenblas-dev \
-    liblapack-dev
+    liblapack-dev \
+    rsync
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 ARG USER_NAME=jovyan
