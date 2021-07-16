@@ -280,6 +280,8 @@ WORKDIR /tmp
 
 RUN export JAVA_HOME=/tmp/jovyan/.sdkman/candidates/java/current && \
     cd /tmp && \
+    source /opt/conda/etc/profile.d/conda.sh && \
+    conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
     git clone https://github.com/hail-is/hail.git && \
     cd hail/hail && \
     make install-on-cluster HAIL_COMPILE_NATIVES=1 SCALA_VERSION=${SCALA_VERSION} SPARK_VERSION=${SPARK_VERSION}
