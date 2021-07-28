@@ -38,7 +38,7 @@ fi
 export PYSPARK_PYTHON=python3
 
 export PYSPARK_SUBMIT_ARGS="--repositories ${BIODATAGEEKS_REPOS} \
-  --jars /tmp/gcs-connector-${GCS_CONNECTOR_VERSION}-shaded.jar,/tmp/google-cloud-nio-${GCS_NIO_VERSION}-shaded.jar \
+  --jars /tmp/gcs-connector-${GCS_CONNECTOR_VERSION}-shaded.jar,/tmp/google-cloud-nio-${GCS_NIO_VERSION}-shaded.jar,$HAIL_HOME/hail-all-spark.jar \
   --conf spark.hadoop.google.cloud.auth.service.account.enable=true \
   --conf spark.hadoop.google.cloud.auth.service.account.json.keyfile=$GOOGLE_APPLICATION_CREDENTIALS \
   --conf spark.kubernetes.driverEnv.GCS_PROJECT_ID=$PROJECT_ID \
@@ -46,6 +46,10 @@ export PYSPARK_SUBMIT_ARGS="--repositories ${BIODATAGEEKS_REPOS} \
   --conf spark.executorEnv.GCS_PROJECT_ID=$PROJECT_ID \
   --conf spark.executorEnv.GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_APPLICATION_CREDENTIALS \
   --conf spark.kubernetes.driver.secrets.$SERVICE_ACCOUNT-secret=$SECRETS_MOUNT_DIR \
+  --conf spark.kubernetes.driver.extraClassPath=$HAIL_HOME/hail-all-spark.jar \
+  --conf spark.kubernetes.executor.extraClassPath=./hail-all-spark.jar \
+  --conf spark.serializer=org.apache.spark.serializer.KryoSerializer \
+  --conf spark.kryo.registrator=is.hail.kryo.HailKryoRegistrator \
   --conf spark.kubernetes.executor.secrets.$SERVICE_ACCOUNT-secret=$SECRETS_MOUNT_DIR \
   --conf spark.hadoop.fs.gs.project.id=$PROJECT_ID \
   --conf spark.hadoop.fs.gs.impl=com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem \

@@ -285,3 +285,5 @@ RUN export JAVA_HOME=/tmp/jovyan/.sdkman/candidates/java/current && \
     git clone https://github.com/hail-is/hail.git && \
     cd hail/hail && \
     make install-on-cluster HAIL_COMPILE_NATIVES=1 SCALA_VERSION=${SCALA_VERSION} SPARK_VERSION=${SPARK_VERSION}
+
+ENV HAIL_HOME=/tmp/jovyan/venv/edugen/lib/python3.7/site-packages/hail/backend
