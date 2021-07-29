@@ -157,7 +157,7 @@ RUN cd /tmp && \
 
 RUN mkdir -p /mnt/data && chown -R $NB_USER /mnt/data
 ADD resources/edugen/bin/* /usr/local/bin/
-RUN apt-get install python3-opencv -y
+RUN apt-get update && apt-get install python3-opencv -y
 
 RUN apt-get update && apt-get -qq -y install lsb-release gnupg && \
     export GCSFUSE_REPO=gcsfuse-`lsb_release -c -s` && \
