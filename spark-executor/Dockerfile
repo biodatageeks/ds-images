@@ -36,11 +36,14 @@ RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
             libdbd-mysql-perl \
             libbz2-dev \
             liblzma-dev \
+            liblz4-dev \
             build-essential \
             libcurl3-dev \
             unzip \
             libssl-dev \
             samtools \
+            libopenblas-dev \
+            liblapack-dev \
             openssl && \
         cd /tmp && \
         git clone https://github.com/atks/vt.git  && \

@@ -82,10 +82,14 @@ RUN apt-get update --fix-missing && apt-get -qq -y install \
     libz-dev \
     libbz2-dev \
     liblzma-dev \
+    liblz4-dev \
     libcurl4-gnutls-dev \
     libssl-dev \
     g++ \
-    vcftools
+    vcftools \
+    libopenblas-dev \
+    liblapack-dev \
+    rsync
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 ARG USER_NAME=jovyan
@@ -153,7 +157,7 @@ RUN cd /tmp && \
 
 RUN mkdir -p /mnt/data && chown -R $NB_USER /mnt/data
 ADD resources/edugen/bin/* /usr/local/bin/
-RUN apt-get install python3-opencv -y
+RUN apt-get update && apt-get install python3-opencv -y
 
 RUN apt-get update && apt-get -qq -y install lsb-release gnupg && \
     export GCSFUSE_REPO=gcsfuse-`lsb_release -c -s` && \
@@ -211,6 +215,7 @@ RUN source /opt/conda/etc/profile.d/conda.sh && \
                     pandas==1.1.4 \
                     seaborn==0.11.0 \
                     gsutil==$GSUTIL_VERSION \
+                    aiohttp==3.7.4 \
                     google-cloud-storage==1.33.0 && \
     python -m ipykernel install --user --name $JUPYTER_KERNEL_NAME --display-name $JUPYTER_KERNEL_NAME && \
     conda deactivate
@@ -270,3 +275,15 @@ ENV PATH=$PATH:/tmp/jovyan/.local/bin
 ENV KEDRO_VERSION=$KEDRO_VERSION
 ENV PYTHON_MINOR=$PYTHON_MINOR
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+WORKDIR /tmp
+
+RUN export JAVA_HOME=/tmp/jovyan/.sdkman/candidates/java/current && \
+    cd /tmp && \
+    source /opt/conda/etc/profile.d/conda.sh && \
+    conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
+    git clone https://github.com/hail-is/hail.git && \
+    cd hail/hail && \
+    make install-on-cluster HAIL_COMPILE_NATIVES=1 SCALA_VERSION=${SCALA_VERSION} SPARK_VERSION=${SPARK_VERSION}
+
+ENV HAIL_HOME=/tmp/jovyan/venv/edugen/lib/python3.7/site-packages/hail/backend

@@ -82,7 +82,7 @@ variables:
 
 ### image for PW students
 .edugenImageVars: &edugenImageVars
-  JDK_VERSION: 11.0.9.hs-adpt
+  JDK_VERSION: 8.0.275.hs-adpt
   SPARK_VERSION: "3.0.1"
   SPARK_IMAGE: "biodatageeks/spark-py:v3.0.1-edugen-0.1.10-g88bbf61"
   PYTHON_MINOR: "3.7"
