@@ -204,6 +204,7 @@ RUN source /opt/conda/etc/profile.d/conda.sh && \
     conda create python=$PYTHON_MINOR -p $HOME/venv/$JUPYTER_KERNEL_NAME -y && \
     conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
     pip install -U ipykernel==5.3.4 \
+                    ipython_genutils==0.2.0 \
                     pandas==1.1.4 \
                     pyspark==$SPARK_VERSION \
                     googledrivedownloader==0.4 \
