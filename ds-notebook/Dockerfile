@@ -237,8 +237,7 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
     fi && \
     if [ $BIG_DATA_GENOMICS_ENABLED == "true" ]; then \
         pip install -U pip==$PIP_VERSION && \
-        pip install -U pysequila==$PYSEQUILA_VERSION \
-                       opencv-python==4.5.1.48 \
+        pip install -U opencv-python==4.5.1.48 \
 #                       pyseqtender==$PYSEQTENDER_VERSION \ /FIXME:temporary disabling pyseqtender does not support spark 3.0.1
                        glow.py==$GLOW_PY_VERSION; \
     fi && \
