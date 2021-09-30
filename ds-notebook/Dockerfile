@@ -204,6 +204,7 @@ RUN source /opt/conda/etc/profile.d/conda.sh && \
     conda create python=$PYTHON_MINOR -p $HOME/venv/$JUPYTER_KERNEL_NAME -y && \
     conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
     pip install -U ipykernel==5.3.4 \
+                    ipython_genutils==0.2.0 \
                     pandas==1.1.4 \
                     pyspark==$SPARK_VERSION \
                     googledrivedownloader==0.4 \
@@ -236,8 +237,7 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
     fi && \
     if [ $BIG_DATA_GENOMICS_ENABLED == "true" ]; then \
         pip install -U pip==$PIP_VERSION && \
-        pip install -U pysequila==$PYSEQUILA_VERSION \
-                       opencv-python==4.5.1.48 \
+        pip install -U opencv-python==4.5.1.48 \
 #                       pyseqtender==$PYSEQTENDER_VERSION \ /FIXME:temporary disabling pyseqtender does not support spark 3.0.1
                        glow.py==$GLOW_PY_VERSION; \
     fi && \

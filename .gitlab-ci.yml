@@ -26,8 +26,8 @@ variables:
   AIRFLOW_ENABLED: "false"
   AIRFLOW_VERSION: 2.0.0
   BIG_DATA_GENOMICS_ENABLED: "false"
-  GLOW_VERSION: "io.projectglow:glow-spark2_2.11:0.6.0"
-  GLOW_PY_VERSION: 0.6.0
+  GLOW_VERSION: "io.projectglow:glow-spark3_2.12:1.1.0"
+  GLOW_PY_VERSION: 1.1.0
   SEQUILA_VERSION: "org.biodatageeks:sequila_2.11:0.5.20"
   PYSEQUILA_VERSION: 0.1.8
   SEQTENDER_VERSION: "org.biodatageeks:seqtender_2.11:0.3.7"
@@ -97,7 +97,7 @@ variables:
   AIRFLOW_ENABLED: "true"
   BIG_DATA_GENOMICS_ENABLED: "true"
   VEP_VERSION: 101
-  GLOW_VERSION: "io.projectglow:glow-spark3_2.12:0.6.0"
+  GLOW_VERSION: "io.projectglow:glow-spark3_2.12:1.1.0"
   NOTEBOOKS_REPO: https://github.com/IMID/edugen_pub
 
 

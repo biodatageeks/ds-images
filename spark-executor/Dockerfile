@@ -18,7 +18,7 @@ RUN if [ $JUPYTER_KERNEL_NAME == "datascience" ]; then \
     fi
 
 RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
-        apt-get update && \
+        apt-get --allow-releaseinfo-change update && \
         apt-get -qq -y install \
             gcc \
             g++ \
