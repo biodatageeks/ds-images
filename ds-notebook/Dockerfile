@@ -125,7 +125,7 @@ RUN pip install \
     gsutil==$GSUTIL_VERSION \
     kubernetes==12.0.1 \
     pylint==2.8.3 \
-    jupyter-server-proxy==1.5.0 && \
+    jupyter-server-proxy==3.2.0 && \
     jupyter labextension install @jupyterlab/server-proxy
 
 RUN cd /tmp && \
@@ -153,9 +153,9 @@ RUN cd /tmp && \
 
 RUN mkdir -p /mnt/data && chown -R $NB_USER /mnt/data
 ADD resources/edugen/bin/* /usr/local/bin/
-RUN apt-get install python3-opencv -y
+RUN apt-get update --fix-missing && apt-get install python3-opencv -y
 
-RUN apt-get update && apt-get -qq -y install lsb-release gnupg && \
+RUN apt-get update --fix-missing && apt-get -qq -y install lsb-release gnupg && \
     export GCSFUSE_REPO=gcsfuse-`lsb_release -c -s` && \
     echo "deb http://packages.cloud.google.com/apt $GCSFUSE_REPO main" | tee /etc/apt/sources.list.d/gcsfuse.list && \
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \
@@ -211,6 +211,7 @@ RUN source /opt/conda/etc/profile.d/conda.sh && \
                     pandas==1.1.4 \
                     seaborn==0.11.0 \
                     gsutil==$GSUTIL_VERSION \
+                    ipython_genutils==0.2.0 \
                     google-cloud-storage==1.33.0 && \
     python -m ipykernel install --user --name $JUPYTER_KERNEL_NAME --display-name $JUPYTER_KERNEL_NAME && \
     conda deactivate
