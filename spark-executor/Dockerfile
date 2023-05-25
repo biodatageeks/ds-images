@@ -13,8 +13,7 @@ ENV VEP_VERSION=$VEP_VERSION
 
 USER root
 RUN if [ $JUPYTER_KERNEL_NAME == "datascience" ]; then \
-        pip3 install mlflow==${MLFLOW_VERSION} \
-                     PyArrow==0.15.1 ; \
+        pip3 install mlflow==${MLFLOW_VERSION}; \
     fi
 
 RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
