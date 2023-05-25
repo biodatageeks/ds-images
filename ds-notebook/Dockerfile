@@ -9,7 +9,7 @@ ARG SCALA_VERSION=2.12.10
 ARG SBT_VERSION=1.3.10
 ARG SPARK_VERSION
 ARG HADOOP_VERSION=2.7
-ARG PIP_VERSION=21.0.1
+ARG PIP_VERSION=23.1.2
 ARG PY4J_VERSION="0.10.9"
 ARG NOTEBOOKS_REPO
 ARG JUPYTER_KERNEL_NAME
@@ -73,7 +73,7 @@ RUN apt-get update --fix-missing && apt-get -qq -y install \
     unzip \
     zip \
     gcc \
-    python-dev \
+    python${PYTHON_MINOR} \
     python-setuptools \
     libffi-dev \
     jq \
@@ -123,17 +123,17 @@ ADD resources/.boto_template /tmp/.boto_template
 
 RUN pip install \
     gsutil==$GSUTIL_VERSION \
-    kubernetes==12.0.1 \
+    kubernetes==26.1.0 \
     pylint==2.8.3 \
-    jupyter-server-proxy==3.2.0 && \
+    jupyter-server-proxy==4.0.0 && \
     jupyter labextension install @jupyterlab/server-proxy
 
 RUN cd /tmp && \
     git clone https://github.com/yuvipanda/jupyter-launcher-shortcuts.git && \
     cd jupyter-launcher-shortcuts && \
-    git checkout 274b69888b4c11cddb69d284edc38a1e74e1cdb7 && \
+    git checkout 39af7a2d201ceaa27dc6cbc8ab5b93a26a763697 && \
     pip install -e . && \
-    jupyter labextension install jupyterlab-launcher-shortcuts && \
+    jupyter labextension install jupyterlab-launcher-shortcuts@3.0.0 && \
     jupyter serverextension enable jupyter_launcher_shortcuts --sys-prefix
 
 
@@ -161,7 +161,7 @@ RUN apt-get update --fix-missing && apt-get -qq -y install lsb-release gnupg && 
     curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - && \
     apt-get update && apt-get -qq -y install gcsfuse
 
-RUN pip install -U nbresuse==0.3.3 && \
+RUN pip install -U nbresuse==0.4.0 && \
     jupyter labextension install jupyterlab-topbar-extension jupyterlab-system-monitor
 
 RUN if [ $JUPYTER_KERNEL_NAME == "edugen" ]; then \
@@ -203,16 +203,15 @@ RUN /opt/code-server-*-linux-amd64/bin/code-server \
 RUN source /opt/conda/etc/profile.d/conda.sh && \
     conda create python=$PYTHON_MINOR -p $HOME/venv/$JUPYTER_KERNEL_NAME -y && \
     conda activate $HOME/venv/$JUPYTER_KERNEL_NAME && \
-    pip install -U ipykernel==5.3.4 \
-                    pandas==1.1.4 \
+    pip install -U ipykernel==6.22.0 \
+                    pandas==1.5.3 \
                     pyspark==$SPARK_VERSION \
                     googledrivedownloader==0.4 \
-                    matplotlib==3.3.3 \
-                    pandas==1.1.4 \
-                    seaborn==0.11.0 \
+                    matplotlib==3.7.1 \
+                    seaborn==0.12.2 \
                     gsutil==$GSUTIL_VERSION \
                     ipython_genutils==0.2.0 \
-                    google-cloud-storage==1.33.0 && \
+                    google-cloud-storage==2.9.0 && \
     python -m ipykernel install --user --name $JUPYTER_KERNEL_NAME --display-name $JUPYTER_KERNEL_NAME && \
     conda deactivate
 
@@ -227,8 +226,7 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
     fi && \
     if [ $MLFLOW_ENABLED == "true" ]; then \
         pip install -U pip==$PIP_VERSION && \
-        pip install -U mlflow==$MLFLOW_VERSION \
-                       PyArrow==0.15.1; \
+        pip install -U mlflow==$MLFLOW_VERSION; \
     fi && \
     if [ $AIRFLOW_ENABLED == "true" ]; then \
         pip install -U pip==$PIP_VERSION && \
@@ -245,9 +243,8 @@ RUN  source /opt/conda/etc/profile.d/conda.sh && \
     if [ $KEDRO_ENABLED == "true" ]; then \
         pip install -U pip==$PIP_VERSION && \
         pip install -U kedro==$KEDRO_VERSION \
-                       kedro-viz kedro-airflow==0.4.1 kedro-mlflow==0.7.2; \
+                       kedro-viz kedro-mlflow==0.11.8; \
     fi && \
-    pip install -U "sqlalchemy<1.4.0" && \
     conda deactivate
 
 RUN cd /tmp && wget https://repo1.maven.org/maven2/com/google/cloud/bigdataoss/gcs-connector/${GCS_CONNECTOR_VERSION}/gcs-connector-${GCS_CONNECTOR_VERSION}-shaded.jar && \
